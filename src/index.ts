@@ -1,4 +1,6 @@
 import express from "express";
+import { Declaracion } from "./Instrucciones/Declaracion";
+import { Main } from "./Instrucciones/Main";
 import { Tabla } from "./Simbolos/Tabla";
 import { Exception } from "./Utilidades/Exception";
 
@@ -32,8 +34,15 @@ app.post("/ejecutar", (req, res) => {
   const arbolAST = parser.parse(codigo_fuente);
   
   const tabla = new Tabla(null);
-  arbolAST.instrucciones.map((m: any) => {
-    const res = m.execute(tabla, arbolAST);
+  arbolAST.instrucciones.forEach((m: any) => {
+    if (!(m instanceof Main || m instanceof Declaracion)) {
+      console.log(m);
+      const error = new Exception('Semantico', 'Sentencia no valida, sentencia fuera del main', m.linea, m.columna);
+      arbolAST.excepciones.push(error);
+      arbolAST.console.push(error.toString());
+    } else {
+      const res = m.execute(tabla, arbolAST);
+    }
   });
 
   res.render('views/index', {

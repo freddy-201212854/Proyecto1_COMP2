@@ -20,9 +20,6 @@ export class Print extends Nodo{
     }
 
     execute(table: Tabla, tree: Arbol): any {
-        console.log("-----------------------------------");
-        console.log(this.expression);
-        console.log("-----------------------------------");
         const value = this.expression.execute(table, tree);
         tree.console.push(value);
         return null;

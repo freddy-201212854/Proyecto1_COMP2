@@ -4,7 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const Declaracion_1 = require("./Instrucciones/Declaracion");
+const Main_1 = require("./Instrucciones/Main");
 const Tabla_1 = require("./Simbolos/Tabla");
+const Exception_1 = require("./Utilidades/Exception");
 const parser = require("./Gramatica/OLC2.js");
 const cors = require("cors");
 const app = express_1.default();
@@ -29,8 +32,16 @@ app.post("/ejecutar", (req, res) => {
     }
     const arbolAST = parser.parse(codigo_fuente);
     const tabla = new Tabla_1.Tabla(null);
-    arbolAST.instrucciones.map((m) => {
-        const res = m.execute(tabla, arbolAST);
+    arbolAST.instrucciones.forEach((m) => {
+        if (!(m instanceof Main_1.Main || m instanceof Declaracion_1.Declaracion)) {
+            console.log(m);
+            const error = new Exception_1.Exception('Semantico', 'Sentencia no valida, sentencia fuera del main', m.linea, m.columna);
+            arbolAST.excepciones.push(error);
+            arbolAST.console.push(error.toString());
+        }
+        else {
+            const res = m.execute(tabla, arbolAST);
+        }
     });
     res.render('views/index', {
         codigo_fuente,

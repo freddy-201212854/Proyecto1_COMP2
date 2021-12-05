@@ -18,9 +18,6 @@ class Print extends Nodo_1.Nodo {
         this.expression = expression;
     }
     execute(table, tree) {
-        console.log("-----------------------------------");
-        console.log(this.expression);
-        console.log("-----------------------------------");
         const value = this.expression.execute(table, tree);
         tree.console.push(value);
         return null;
