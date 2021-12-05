@@ -1,0 +1,65 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>QUETZAL-OLC2</title>
+    <link rel="stylesheet" href="/css/codemirror.css" />
+    <link rel="stylesheet" href="/css/dracula.css" />
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>Quetzal OCL2</h1>
+    </div>
+    <button class="btn btn-primary" onclick="ejecutar()">Ejecutar</button>
+    <form method="post" action="/ejecutar" id="form">
+      <div class="compilador">
+        <div class="content-interprete">
+          <h3>Interprete</h3>
+          <% if (codigo_fuente) { %>
+          <textarea id="codigo_fuente" name="codigo_fuente">
+<%= codigo_fuente %></textarea
+          >
+          <% } else {%>
+          <textarea id="codigo_fuente" name="codigo_fuente"></textarea>
+          <%}%>
+        </div>
+        <div class="content-consola">
+          <h3>Consola</h3>
+          <% if (consola) { %>
+          <textarea class="consola" id="consola" name="consola" readonly>
+  <%=consola.join('\n')%></textarea
+          >
+          <% } else {%>
+          <textarea
+            class="consola"
+            id="consola"
+            name="consola"
+            readonly
+          ></textarea>
+          <%}%>
+        </div>
+      </div>
+    </form>
+    <script src="/js/codemirror.js"></script>
+    <script src="/js/Jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/Mode/javascript/javascript.js"></script>
+    <script>
+      function ejecutar() {
+        document.getElementById("form").submit();
+      }
+      const editor = CodeMirror.fromTextArea(codigo_fuente, {
+        lineNumbers: true,
+        mode: "javascript",
+        theme: "dracula",
+      });
+
+      editor.setSize("100%", "100%");
+    </script>
+  </body>
+</html>
