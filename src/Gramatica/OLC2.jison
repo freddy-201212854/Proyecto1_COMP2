@@ -109,7 +109,7 @@ TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
 DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, $2, $4, _$.first_line, _$.first_column);}
             ;
 
-ASIGNACION : identifxier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, _$.first_line, _$.first_column);}
+ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, _$.first_line, _$.first_column);}
            ;
 
 PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, _$.first_line, _$.first_column);}
