@@ -6,12 +6,14 @@
     const { Declaracion } = require('../Instrucciones/Declaracion');
     const { Asignacion } = require('../Instrucciones/Asignacion');
     const { Primitivo } = require('../Expresiones/Primitivo');
+    const { Identificador } = require('../Expresiones/Identificador');
+    const { Print } = require('../Instrucciones/Print');
 %}
 
 %lex
 %options case-insensitive
 entero [0-9]+
-decimal {entero}("."{entero})?
+decimal {entero}"."{entero}
 stringliteral (\"[^"]*\")
 identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 %%
@@ -98,7 +100,7 @@ MAIN : 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($4, _$.first_line, _$.
 
 TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
      | 'boolean' {$$ = new Tipo(Tipos.BOOLEAN);}
-     | 'int' {$$ = new Tipo(Tipos.NUMERIC);}
+     | 'int' {$$ = new Tipo(Tipos.INT);}
      | 'double' {$$ = new Tipo(Tipos.DOUBLE);}
      | 'char' {$$ = new Tipo(Tipos.CHAR);}
      | 'null' {$$ = new Tipo(Tipos.NULL);}
@@ -110,8 +112,10 @@ DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, $2, $4
 ASIGNACION : identifxier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, _$.first_line, _$.first_column);}
            ;
 
-PRINT : 'print' '(' EXPRESION ')' ';' {console.log("LLego a PRINT", $3);}
-        |'print' '(' EXPRESION ')' {console.log("LLego a PRINT", $3);}
+PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, _$.first_line, _$.first_column);}
+      ;
+
+PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Print($3, _$.first_line, _$.first_column);}
         ;
 
 BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
@@ -122,7 +126,9 @@ EXPRESION : EXPRESION '+' EXPRESION
           | EXPRESION '-' EXPRESION		    
           | EXPRESION '*' EXPRESION		   
           | EXPRESION '/' EXPRESION	         
-          | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.NUMERIC), Number($1), _$.first_line, _$.first_column);}
-          | identifier			          
+          | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), _$.first_line, _$.first_column);}
+          | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), _$.first_line, _$.first_column);}
+          | identifier			            {$$ = new Identificador($1, _$.first_line, _$.first_column);}
+          | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), _$.first_line, _$.first_column); }
           | '(' EXPRESION ')'
           ;

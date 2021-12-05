@@ -1,4 +1,6 @@
 import express from "express";
+import { Tabla } from "./Simbolos/Tabla";
+import { Exception } from "./Utilidades/Exception";
 
 const parser = require("./Gramatica/OLC2.js");
 const cors = require("cors");
@@ -22,18 +24,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/ejecutar", (req, res) => {
-  console.log("Esta entrando aca");
   const { codigo_fuente, consola } = req.body;
   if (!codigo_fuente) {
     return res.redirect("/");
   }
-  console.log("Esta entrando aca 2 ", codigo_fuente);
-  const tree = parser.parse(codigo_fuente);
-  console.log("el arbol es ", tree);
-  res.render("views/index", {
+
+  const arbolAST = parser.parse(codigo_fuente);
+  
+  const tabla = new Tabla(null);
+  arbolAST.instrucciones.map((m: any) => {
+    const res = m.execute(tabla, arbolAST);
+  });
+
+  res.render('views/index', {
     codigo_fuente,
-    consola: [],
-    errores: [],
+    consola: arbolAST.console,
+    errores: arbolAST.excepciones
   });
 });
 

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const Tabla_1 = require("./Simbolos/Tabla");
 const parser = require("./Gramatica/OLC2.js");
 const cors = require("cors");
 const app = express_1.default();
@@ -22,18 +23,19 @@ app.get("/", (req, res) => {
     });
 });
 app.post("/ejecutar", (req, res) => {
-    console.log("Esta entrando aca");
     const { codigo_fuente, consola } = req.body;
     if (!codigo_fuente) {
         return res.redirect("/");
     }
-    console.log("Esta entrando aca 2 ", codigo_fuente);
-    const tree = parser.parse(codigo_fuente);
-    console.log("el arbol es ", tree);
-    res.render("views/index", {
+    const arbolAST = parser.parse(codigo_fuente);
+    const tabla = new Tabla_1.Tabla(null);
+    arbolAST.instrucciones.map((m) => {
+        const res = m.execute(tabla, arbolAST);
+    });
+    res.render('views/index', {
         codigo_fuente,
-        consola: [],
-        errores: [],
+        consola: arbolAST.console,
+        errores: arbolAST.excepciones
     });
 });
 app.listen(port, () => {

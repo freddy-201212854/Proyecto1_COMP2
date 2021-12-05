@@ -34,9 +34,7 @@ export class Asignacion extends Nodo {
         let variable: Simbolo;
         variable = table.getVariable(this.identifier);
         if (variable == null) {
-            const error = new Exception('Semantico',
-                'No se ha encontrado la variable ' + this.identifier,
-                this.linea, this.columna);
+            const error = new Exception('Semantico', 'No se ha encontrado la variable ' + this.identifier, this.linea, this.columna);
             tree.excepciones.push(error);
             tree.console.push(error.toString());
             return error;
@@ -44,9 +42,7 @@ export class Asignacion extends Nodo {
 
 
         if (this.value.tipo.type != variable.Tipo.type) {
-            const error = new Exception('Semantico',
-                `No se puede asignar la variable porque los tipos no coinciden.`,
-                this.linea, this.columna);
+            const error = new Exception('Semantico', `No se puede asignar la variable porque los tipos no coinciden.`, this.linea, this.columna);
             tree.excepciones.push(error);
             tree.console.push(error.toString());
             return error;

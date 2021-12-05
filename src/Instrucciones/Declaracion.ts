@@ -35,9 +35,7 @@ export class Declaracion extends Nodo {
         }
 
         if (this.tipo.type != this.value.tipo.type) {
-            const error = new Exception('Semantico',
-                `No se puede declarar la variable porque los tipos no coinciden.`,
-                this.linea, this.columna);
+            const error = new Exception('Semantico', `No se puede declarar la variable porque los tipos no coinciden.`, this.linea, this.columna);
             tree.excepciones.push(error);
             tree.console.push(error.toString());
             return error;
