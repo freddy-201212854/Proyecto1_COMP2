@@ -9,39 +9,53 @@
     <link rel="stylesheet" href="/css/dracula.css" />
     <link rel="stylesheet" href="/css/bootstrap.css" />
     <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
   </head>
 
   <body>
     <div class="header">
       <h1>Quetzal OCL2</h1>
     </div>
-    <button class="btn btn-primary" onclick="ejecutar()">Ejecutar</button>
+    <button class="btn btn-primary" >Ejecutar</button>
     <form method="post" action="/ejecutar" id="form">
       <div class="compilador">
         <div class="content-interprete">
           <h3>Interprete</h3>
           <% if (codigo_fuente) { %>
-          <textarea id="codigo_fuente" name="codigo_fuente">
-<%= codigo_fuente %></textarea
-          >
+            <textarea id="codigo_fuente" name="codigo_fuente"><%= codigo_fuente %></textarea>
           <% } else {%>
-          <textarea id="codigo_fuente" name="codigo_fuente"></textarea>
+            <textarea id="codigo_fuente" name="codigo_fuente"></textarea>
           <%}%>
         </div>
         <div class="content-consola">
           <h3>Consola</h3>
           <% if (consola) { %>
-          <textarea class="consola" id="consola" name="consola" readonly>
-  <%=consola.join('\n')%></textarea
-          >
+            <textarea class="consola" id="consola" name="consola" readonly> <%=consola.join('\n')%></textarea>
           <% } else {%>
-          <textarea
-            class="consola"
-            id="consola"
-            name="consola"
-            readonly
-          ></textarea>
+            <textarea class="consola" id="consola" name="consola" readonly ></textarea>
           <%}%>
+        </div>
+      </div>
+      <div class="menu-interprete">
+        <div class="btn btn-ejecutar" onclick="ejecutar()">
+          <i class="fas fa-play"></i>
+          <span>Ejecutar</span>
+        </div>
+        <div class="btn btn-reporte-ast">
+          <i class="fas fa-project-diagram"></i>
+          <span>AST</span>
+        </div>
+        <div class="btn btn-tabla-simbolos">
+          <i class="fas fa-table"></i>
+          <span>Tabla de simbolos</span>
+        </div>
+        <div class="btn btn-tabla-errores">
+          <i class="fas fa-table"></i>
+          <span>Tabla de errores</span>
+        </div>
+        <div class="btn btn-reporte-gramatical">
+          <i class="fas fa-project-diagram"></i>
+          <span>Reporte Gramatical</span>
         </div>
       </div>
     </form>

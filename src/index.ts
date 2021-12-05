@@ -22,12 +22,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/ejecutar", (req, res) => {
+  console.log("Esta entrando aca");
   const { codigo_fuente, consola } = req.body;
   if (!codigo_fuente) {
     return res.redirect("/");
   }
+  console.log("Esta entrando aca 2 ", codigo_fuente);
   const tree = parser.parse(codigo_fuente);
-
+  console.log("el arbol es ", tree);
   res.render("views/index", {
     codigo_fuente,
     consola: [],

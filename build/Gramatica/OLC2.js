@@ -73,26 +73,79 @@
 */
 var OLC2 = (function () {
     var o = function (k, v, o, l) { for (o = o || {}, l = k.length; l--; o[k[l]] = v)
-        ; return o; }, $V0 = [1, 5], $V1 = [5, 8], $V2 = [1, 12], $V3 = [1, 10], $V4 = [1, 11], $V5 = [1, 14], $V6 = [1, 15], $V7 = [1, 16], $V8 = [1, 17], $V9 = [11, 13, 14, 15, 16], $Va = [11, 13, 14];
+        ; return o; }, $V0 = [1, 8], $V1 = [1, 12], $V2 = [1, 13], $V3 = [1, 14], $V4 = [1, 15], $V5 = [1, 16], $V6 = [1, 17], $V7 = [1, 10], $V8 = [1, 11], $V9 = [5, 11, 16, 17, 18, 19, 20, 21, 26, 27, 29], $Va = [1, 29], $Vb = [1, 28], $Vc = [1, 27], $Vd = [1, 35], $Ve = [1, 36], $Vf = [1, 37], $Vg = [1, 38], $Vh = [13, 25, 30, 31, 32, 33], $Vi = [13, 25, 30, 31];
     var parser = { trace: function trace() { },
         yy: {},
-        symbols_: { "error": 2, "INICIO": 3, "INSTRUCCIONES": 4, "EOF": 5, "INSTRUCCION": 6, "PRINT": 7, "print": 8, "(": 9, "EXPRESION": 10, ")": 11, ";": 12, "+": 13, "-": 14, "*": 15, "/": 16, "decimal": 17, "identifier": 18, "$accept": 0, "$end": 1 },
-        terminals_: { 2: "error", 5: "EOF", 8: "print", 9: "(", 11: ")", 12: ";", 13: "+", 14: "-", 15: "*", 16: "/", 17: "decimal", 18: "identifier" },
-        productions_: [0, [3, 2], [4, 2], [4, 1], [6, 1], [7, 5], [7, 4], [10, 3], [10, 3], [10, 3], [10, 3], [10, 1], [10, 1], [10, 3]],
+        symbols_: { "error": 2, "INICIO": 3, "INSTRUCCIONES": 4, "EOF": 5, "INSTRUCCION": 6, "MAIN": 7, "DECLARACION": 8, "ASIGNACION": 9, "PRINT": 10, "main": 11, "(": 12, ")": 13, "BLOQUE_INSTRUCCIONES": 14, "TIPO": 15, "string": 16, "boolean": 17, "int": 18, "double": 19, "char": 20, "null": 21, "identifier": 22, "=": 23, "EXPRESION": 24, ";": 25, "identifxier": 26, "print": 27, "{": 28, "}": 29, "+": 30, "-": 31, "*": 32, "/": 33, "decimal": 34, "$accept": 0, "$end": 1 },
+        terminals_: { 2: "error", 5: "EOF", 11: "main", 12: "(", 13: ")", 16: "string", 17: "boolean", 18: "int", 19: "double", 20: "char", 21: "null", 22: "identifier", 23: "=", 25: ";", 26: "identifxier", 27: "print", 28: "{", 29: "}", 30: "+", 31: "-", 32: "*", 33: "/", 34: "decimal" },
+        productions_: [0, [3, 2], [4, 2], [4, 1], [6, 1], [6, 1], [6, 1], [6, 1], [7, 4], [15, 1], [15, 1], [15, 1], [15, 1], [15, 1], [15, 1], [8, 5], [9, 4], [10, 5], [10, 4], [14, 3], [14, 2], [24, 3], [24, 3], [24, 3], [24, 3], [24, 1], [24, 1], [24, 3]],
         performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
             /* this == yyval */
             var $0 = $$.length - 1;
             switch (yystate) {
+                case 1:
+                    this.$ = new Arbol($$[$0 - 1]);
+                    console.log("Arbol desde la gramatica ", this.$);
+                    return this.$;
+                    break;
+                case 2:
+                    this.$ = $$[$0 - 1];
+                    this.$.push($$[$0]);
+                    break;
+                case 3:
+                    this.$ = [$$[$0]];
+                    break;
+                case 4:
                 case 5:
+                case 6:
+                    this.$ = $$[$0];
+                    break;
+                case 8:
+                    this.$ = new Main($$[$0], _$.first_line, _$.first_column);
+                    break;
+                case 9:
+                    this.$ = new Tipo(Tipos.STRING);
+                    break;
+                case 10:
+                    this.$ = new Tipo(Tipos.BOOLEAN);
+                    break;
+                case 11:
+                    this.$ = new Tipo(Tipos.NUMERIC);
+                    break;
+                case 12:
+                    this.$ = new Tipo(Tipos.DOUBLE);
+                    break;
+                case 13:
+                    this.$ = new Tipo(Tipos.CHAR);
+                    break;
+                case 14:
+                    this.$ = new Tipo(Tipos.NULL);
+                    break;
+                case 15:
+                    this.$ = new Declaracion($$[$0 - 4], $$[$0 - 3], $$[$0 - 1], _$.first_line, _$.first_column);
+                    break;
+                case 16:
+                    this.$ = new Asignacion($$[$0 - 3], $$[$0 - 1], _$.first_line, _$.first_column);
+                    break;
+                case 17:
                     console.log("LLego a PRINT", $$[$0 - 2]);
                     break;
-                case 6:
+                case 18:
                     console.log("LLego a PRINT", $$[$0 - 1]);
+                    break;
+                case 19:
+                    this.$ = $$[$0 - 1];
+                    break;
+                case 20:
+                    this.$ = [];
+                    break;
+                case 25:
+                    this.$ = new Primitivo(new Tipo(Tipos.NUMERIC), Number($$[$0]), _$.first_line, _$.first_column);
                     break;
             }
         },
-        table: [{ 3: 1, 4: 2, 6: 3, 7: 4, 8: $V0 }, { 1: [3] }, { 5: [1, 6], 6: 7, 7: 4, 8: $V0 }, o($V1, [2, 3]), o($V1, [2, 4]), { 9: [1, 8] }, { 1: [2, 1] }, o($V1, [2, 2]), { 9: $V2, 10: 9, 17: $V3, 18: $V4 }, { 11: [1, 13], 13: $V5, 14: $V6, 15: $V7, 16: $V8 }, o($V9, [2, 11]), o($V9, [2, 12]), { 9: $V2, 10: 18, 17: $V3, 18: $V4 }, o($V1, [2, 6], { 12: [1, 19] }), { 9: $V2, 10: 20, 17: $V3, 18: $V4 }, { 9: $V2, 10: 21, 17: $V3, 18: $V4 }, { 9: $V2, 10: 22, 17: $V3, 18: $V4 }, { 9: $V2, 10: 23, 17: $V3, 18: $V4 }, { 11: [1, 24], 13: $V5, 14: $V6, 15: $V7, 16: $V8 }, o($V1, [2, 5]), o($Va, [2, 7], { 15: $V7, 16: $V8 }), o($Va, [2, 8], { 15: $V7, 16: $V8 }), o($V9, [2, 9]), o($V9, [2, 10]), o($V9, [2, 13])],
-        defaultActions: { 6: [2, 1] },
+        table: [{ 3: 1, 4: 2, 6: 3, 7: 4, 8: 5, 9: 6, 10: 7, 11: $V0, 15: 9, 16: $V1, 17: $V2, 18: $V3, 19: $V4, 20: $V5, 21: $V6, 26: $V7, 27: $V8 }, { 1: [3] }, { 5: [1, 18], 6: 19, 7: 4, 8: 5, 9: 6, 10: 7, 11: $V0, 15: 9, 16: $V1, 17: $V2, 18: $V3, 19: $V4, 20: $V5, 21: $V6, 26: $V7, 27: $V8 }, o($V9, [2, 3]), o($V9, [2, 4]), o($V9, [2, 5]), o($V9, [2, 6]), o($V9, [2, 7]), { 12: [1, 20] }, { 22: [1, 21] }, { 23: [1, 22] }, { 12: [1, 23] }, { 22: [2, 9] }, { 22: [2, 10] }, { 22: [2, 11] }, { 22: [2, 12] }, { 22: [2, 13] }, { 22: [2, 14] }, { 1: [2, 1] }, o($V9, [2, 2]), { 13: [1, 24] }, { 23: [1, 25] }, { 12: $Va, 22: $Vb, 24: 26, 34: $Vc }, { 12: $Va, 22: $Vb, 24: 30, 34: $Vc }, { 14: 31, 28: [1, 32] }, { 12: $Va, 22: $Vb, 24: 33, 34: $Vc }, { 25: [1, 34], 30: $Vd, 31: $Ve, 32: $Vf, 33: $Vg }, o($Vh, [2, 25]), o($Vh, [2, 26]), { 12: $Va, 22: $Vb, 24: 39, 34: $Vc }, { 13: [1, 40], 30: $Vd, 31: $Ve, 32: $Vf, 33: $Vg }, o($V9, [2, 8]), { 4: 41, 6: 3, 7: 4, 8: 5, 9: 6, 10: 7, 11: $V0, 15: 9, 16: $V1, 17: $V2, 18: $V3, 19: $V4, 20: $V5, 21: $V6, 26: $V7, 27: $V8, 29: [1, 42] }, { 25: [1, 43], 30: $Vd, 31: $Ve, 32: $Vf, 33: $Vg }, o($V9, [2, 16]), { 12: $Va, 22: $Vb, 24: 44, 34: $Vc }, { 12: $Va, 22: $Vb, 24: 45, 34: $Vc }, { 12: $Va, 22: $Vb, 24: 46, 34: $Vc }, { 12: $Va, 22: $Vb, 24: 47, 34: $Vc }, { 13: [1, 48], 30: $Vd, 31: $Ve, 32: $Vf, 33: $Vg }, o($V9, [2, 18], { 25: [1, 49] }), { 6: 19, 7: 4, 8: 5, 9: 6, 10: 7, 11: $V0, 15: 9, 16: $V1, 17: $V2, 18: $V3, 19: $V4, 20: $V5, 21: $V6, 26: $V7, 27: $V8, 29: [1, 50] }, o($V9, [2, 20]), o($V9, [2, 15]), o($Vi, [2, 21], { 32: $Vf, 33: $Vg }), o($Vi, [2, 22], { 32: $Vf, 33: $Vg }), o($Vh, [2, 23]), o($Vh, [2, 24]), o($Vh, [2, 27]), o($V9, [2, 17]), o($V9, [2, 19])],
+        defaultActions: { 12: [2, 9], 13: [2, 10], 14: [2, 11], 15: [2, 12], 16: [2, 13], 17: [2, 14], 18: [2, 1] },
         parseError: function parseError(str, hash) {
             if (hash.recoverable) {
                 this.trace(str);
@@ -243,6 +296,13 @@ var OLC2 = (function () {
             }
             return true;
         } };
+    const { Excepcion } = require('../Utilidades/Exception');
+    const { Tipo, Tipos } = require('../Utilidades/Tipo');
+    const { Arbol } = require('../Simbolos/Arbol');
+    const { Main } = require('../Instrucciones/Main');
+    const { Declaracion } = require('../Instrucciones/Declaracion');
+    const { Asignacion } = require('../Instrucciones/Asignacion');
+    const { Primitivo } = require('../Expresiones/Primitivo');
     /* generated by jison-lex 0.3.4 */
     var lexer = (function () {
         var lexer = ({
@@ -552,120 +612,138 @@ var OLC2 = (function () {
                     case 0: /* skip whitespace */
                         break;
                     case 1:
-                        return 17;
+                        return 34;
                         break;
                     case 2:
-                        return 'STRING_LITERAL';
+                        return 'entero';
                         break;
                     case 3:
-                        return 15;
+                        return 'STRING_LITERAL';
                         break;
                     case 4:
-                        return 16;
+                        return 32;
                         break;
                     case 5:
-                        return 12;
+                        return 33;
                         break;
                     case 6:
-                        return 14;
+                        return 25;
                         break;
                     case 7:
-                        return 13;
+                        return 31;
                         break;
                     case 8:
-                        return 15;
+                        return 30;
                         break;
                     case 9:
-                        return '<';
+                        return 32;
                         break;
                     case 10:
-                        return '>';
+                        return '<';
                         break;
                     case 11:
-                        return '<=';
+                        return '>';
                         break;
                     case 12:
-                        return '>=';
+                        return '<=';
                         break;
                     case 13:
-                        return '==';
+                        return '>=';
                         break;
                     case 14:
-                        return '!=';
+                        return '==';
                         break;
                     case 15:
-                        return '||';
+                        return '!=';
                         break;
                     case 16:
-                        return '&&';
+                        return '||';
                         break;
                     case 17:
-                        return '!';
+                        return '&&';
                         break;
                     case 18:
-                        return '=';
+                        return '!';
                         break;
                     case 19:
-                        return 9;
+                        return 23;
                         break;
                     case 20:
-                        return 11;
+                        return 12;
                         break;
                     case 21:
-                        return '[';
+                        return 13;
                         break;
                     case 22:
-                        return ']';
+                        return '[';
                         break;
                     case 23:
-                        return '{';
+                        return ']';
                         break;
                     case 24:
-                        return '}';
+                        return 28;
                         break;
                     case 25:
-                        return 'true';
+                        return 29;
                         break;
                     case 26:
-                        return 'false';
+                        return 'true';
                         break;
                     case 27:
-                        return 8;
+                        return 'false';
                         break;
                     case 28:
-                        return 'if';
+                        return 27;
                         break;
                     case 29:
-                        return 'else';
+                        return 'if';
                         break;
                     case 30:
-                        return 'break';
+                        return 'else';
                         break;
                     case 31:
-                        return 'continue';
+                        return 'break';
                         break;
                     case 32:
-                        return 'while';
+                        return 'continue';
                         break;
                     case 33:
-                        return 'numeric';
+                        return 'while';
                         break;
                     case 34:
-                        return 'string';
+                        return 11;
                         break;
                     case 35:
-                        return 'boolean';
+                        return 'numeric';
                         break;
                     case 36:
-                        return 18;
+                        return 16;
                         break;
                     case 37:
+                        return 17;
+                        break;
+                    case 38:
+                        return 18;
+                        break;
+                    case 39:
+                        return 21;
+                        break;
+                    case 40:
+                        return 19;
+                        break;
+                    case 41:
+                        return 20;
+                        break;
+                    case 42:
+                        return 22;
+                        break;
+                    case 43:
                         return 5;
                         break;
                 }
             },
-            rules: [/^(?:\s+)/i, /^(?:(([0-9]+)(\.([0-9]+))?))/i, /^(?:(("[^"]*")))/i, /^(?:\*)/i, /^(?:\/)/i, /^(?:;)/i, /^(?:-)/i, /^(?:\+)/i, /^(?:\*)/i, /^(?:<)/i, /^(?:>)/i, /^(?:<=)/i, /^(?:>=)/i, /^(?:==)/i, /^(?:!=)/i, /^(?:\|\|)/i, /^(?:&&)/i, /^(?:!)/i, /^(?:=)/i, /^(?:\()/i, /^(?:\))/i, /^(?:\[)/i, /^(?:\])/i, /^(?:\{)/i, /^(?:\})/i, /^(?:true\b)/i, /^(?:false\b)/i, /^(?:print\b)/i, /^(?:if\b)/i, /^(?:else\b)/i, /^(?:break\b)/i, /^(?:continue\b)/i, /^(?:while\b)/i, /^(?:numeric\b)/i, /^(?:string\b)/i, /^(?:boolean\b)/i, /^(?:(([a-zA-Z_])[a-zA-Z0-9_]*))/i, /^(?:$)/i],
-            conditions: { "INITIAL": { "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37], "inclusive": true } }
+            rules: [/^(?:\s+)/i, /^(?:(([0-9]+)(\.([0-9]+))?))/i, /^(?:([0-9]+))/i, /^(?:(("[^"]*")))/i, /^(?:\*)/i, /^(?:\/)/i, /^(?:;)/i, /^(?:-)/i, /^(?:\+)/i, /^(?:\*)/i, /^(?:<)/i, /^(?:>)/i, /^(?:<=)/i, /^(?:>=)/i, /^(?:==)/i, /^(?:!=)/i, /^(?:\|\|)/i, /^(?:&&)/i, /^(?:!)/i, /^(?:=)/i, /^(?:\()/i, /^(?:\))/i, /^(?:\[)/i, /^(?:\])/i, /^(?:\{)/i, /^(?:\})/i, /^(?:true\b)/i, /^(?:false\b)/i, /^(?:print\b)/i, /^(?:if\b)/i, /^(?:else\b)/i, /^(?:break\b)/i, /^(?:continue\b)/i, /^(?:while\b)/i, /^(?:main\b)/i, /^(?:numeric\b)/i, /^(?:string\b)/i, /^(?:boolean\b)/i, /^(?:int\b)/i, /^(?:null\b)/i, /^(?:double\b)/i, /^(?:char\b)/i, /^(?:(([a-zA-Z_])[a-zA-Z0-9_]*))/i, /^(?:$)/i],
+            conditions: { "INITIAL": { "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43], "inclusive": true } }
         });
         return lexer;
     })();
