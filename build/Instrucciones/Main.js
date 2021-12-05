@@ -18,8 +18,9 @@ class Main extends Nodo_1.Nodo {
         this.expression = expression;
     }
     execute(table, tree) {
-        const value = this.expression.execute(table, tree);
-        tree.console.push(value);
+        this.expression.forEach(element => {
+            element.execute(table, tree);
+        });
         return null;
     }
 }
