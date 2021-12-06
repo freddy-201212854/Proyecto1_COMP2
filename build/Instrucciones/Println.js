@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Println = void 0;
+const Nodo_1 = require("../Abstracto/Nodo");
+const Tipo_1 = require("../utilidades/Tipo");
+/**
+ * Permite imprimir expresiones en la consola
+ */
+class Println extends Nodo_1.Nodo {
+    /**
+     * @constructor Retorna el objeto Print
+     * @param expression Expresion que se va a mostrar en consola
+     * @param line Fila de donde se creo la sentencia
+     * @param column Columna donde se creo la sentencia
+     */
+    constructor(expression, line, column) {
+        super(new Tipo_1.Tipo(Tipo_1.Tipos.VOID), line, column);
+        this.expression = expression;
+    }
+    execute(table, tree) {
+        const value = this.expression.execute(table, tree);
+        tree.console.push("\n" + value.toString());
+        console.log("valor", "\n" + value.toString());
+        return null;
+    }
+}
+exports.Println = Println;

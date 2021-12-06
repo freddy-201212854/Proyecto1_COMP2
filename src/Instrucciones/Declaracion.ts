@@ -29,25 +29,28 @@ export class Declaracion extends Nodo {
     }
 
     execute(table: Tabla, tree: Arbol) {
-        const result = this.value.execute(table, tree);
-        if (result instanceof Exception) {
-            return result;
-        }
+        for (let i = 0; i < this.identifier.length; i++) {
+            const identifier = this.identifier[i];
+            const result = this.value.execute(table, tree);
+            if (result instanceof Exception) {
+                return result;
+            }
 
-        if (this.tipo.type != this.value.tipo.type) {
-            const error = new Exception('Semantico', `No se puede declarar la variable porque los tipos no coinciden.`, this.linea, this.columna);
-            tree.excepciones.push(error);
-            tree.console.push(error.toString());
-            return error;
-        }
-
-        let simbol: Simbolo;
-        simbol = new Simbolo(this.tipo, this.identifier, result);
-        const res = table.setVariable(simbol);
-        if (res != null) {
-            const error = new Exception('Semantico', res, this.linea, this.columna);
-            tree.excepciones.push(error);
-            tree.console.push(error.toString());
+            if (this.tipo.type != this.value.tipo.type) {
+                const error = new Exception('Semantico',`No se puede declarar la variable porque los tipos no coinciden.`, this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+                return error;
+            }
+            
+            let simbol: Simbolo;
+            simbol = new Simbolo(this.tipo, identifier, result);
+            const res = table.setVariable(simbol);
+            if (res != null) {
+                const error = new Exception('Semantico', res, this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+            }   
         }
         return null;
     }

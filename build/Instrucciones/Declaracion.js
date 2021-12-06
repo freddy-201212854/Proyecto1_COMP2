@@ -22,23 +22,26 @@ class Declaracion extends Nodo_1.Nodo {
         this.value = value;
     }
     execute(table, tree) {
-        const result = this.value.execute(table, tree);
-        if (result instanceof Exception_1.Exception) {
-            return result;
-        }
-        if (this.tipo.type != this.value.tipo.type) {
-            const error = new Exception_1.Exception('Semantico', `No se puede declarar la variable porque los tipos no coinciden.`, this.linea, this.columna);
-            tree.excepciones.push(error);
-            tree.console.push(error.toString());
-            return error;
-        }
-        let simbol;
-        simbol = new Simbol_1.Simbolo(this.tipo, this.identifier, result);
-        const res = table.setVariable(simbol);
-        if (res != null) {
-            const error = new Exception_1.Exception('Semantico', res, this.linea, this.columna);
-            tree.excepciones.push(error);
-            tree.console.push(error.toString());
+        for (let i = 0; i < this.identifier.length; i++) {
+            const identifier = this.identifier[i];
+            const result = this.value.execute(table, tree);
+            if (result instanceof Exception_1.Exception) {
+                return result;
+            }
+            if (this.tipo.type != this.value.tipo.type) {
+                const error = new Exception_1.Exception('Semantico', `No se puede declarar la variable porque los tipos no coinciden.`, this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+                return error;
+            }
+            let simbol;
+            simbol = new Simbol_1.Simbolo(this.tipo, identifier, result);
+            const res = table.setVariable(simbol);
+            if (res != null) {
+                const error = new Exception_1.Exception('Semantico', res, this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+            }
         }
         return null;
     }
