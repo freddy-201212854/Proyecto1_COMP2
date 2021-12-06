@@ -19,7 +19,7 @@ class Exception {
         this.columna = columna;
     }
     toString() {
-        return `${this.tipo} ${this.descripcion} ${this.linea} ${this.columna}`;
+        return `${this.tipo} ${this.descripcion} Línea: ${this.linea}, Columna: ${this.columna}`;
     }
 }
 exports.Exception = Exception;
