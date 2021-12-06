@@ -40,9 +40,7 @@
         <div class="content-consola">
           <h3>Consola</h3>
           <% if (consola) { %>
-          <textarea class="consola" id="consola" name="consola" readonly>
- <%=consola.join('\n')%></textarea
-          >
+            <textarea class="consola" id="consola" name="consola" readonly> <%=consola%></textarea>
           <% } else {%>
           <textarea
             class="consola"

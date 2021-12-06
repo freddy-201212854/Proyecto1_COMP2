@@ -29,6 +29,11 @@ export class Identificador extends Nodo {
             tree.excepciones.push(error);
             tree.console.push(error.toString());
             return error;
+        } else if(variable.valor == null) {
+            const error = new Exception('Semantico', 'No se ha inicializado la variable ' + this.identifier, this.linea, this.columna);
+            tree.excepciones.push(error);
+            tree.console.push(error.toString());
+            return error;
         }
         this.tipo = variable.Tipo;
         return variable.valor;

@@ -8,8 +8,8 @@
     const { Primitivo } = require('../Expresiones/Primitivo');
     const { Identificador } = require('../Expresiones/Identificador');
     const { Print } = require('../Instrucciones/Print');
+    const { Println } = require('../Instrucciones/Println');
     const { OperAritmeticas } = require('../Expresiones/OperAritmeticas');
-
 %}
 
 %lex
@@ -30,10 +30,10 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "*"                   return '*'
 "/"                   return '/'
 ";"                   return ';'
+","                   return ','
 "-"                   return '-'
 "+"                   return '+'
 "*"                   return '*'
-
 "<"                   return '<'
 ">"                   return '>'
 "<="                  return '<='
@@ -44,7 +44,6 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "&&"                  return '&&'
 "!"                   return '!'
 "="                   return '='
-
 "("                   return '('
 ")"                   return ')'  
 "["                   return '['
@@ -54,6 +53,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "true"                return 'true'
 "false"               return 'false'
 "print"               return 'print'
+"println"             return 'println'
 "if"                  return 'if'
 "else"                return 'else'
 "break"               return 'break'
@@ -98,7 +98,8 @@ INSTRUCCIONES : INSTRUCCIONES INSTRUCCION {$$ = $1; $$.push($2);}
 INSTRUCCION : MAIN {$$ = $1;}
             | DECLARACION {$$ = $1;}
             | ASIGNACION {$$ = $1;}
-            | PRINT
+            | PRINT {$$ = $1;}
+            | PRINTLN {$$ = $1;}
             ;
 
 MAIN : 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($4, this._$.first_line,this._$.first_column);}
@@ -112,7 +113,12 @@ TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
      | 'null' {$$ = new Tipo(Tipos.NULL);}
      ;
 
-DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, $2, $4, this._$.first_line,this._$.first_column);}
+DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, [$2], $4, _$.first_line, _$.first_column);}
+            | TIPO LISTA_VAR ';' {$$ = new Declaracion($1, $2, new Primitivo($1, null, _$.first_line, _$.first_column), _$.first_line, _$.first_column);}
+            ;
+
+LISTA_VAR : LISTA_VAR ',' identifier      {$$.push($3);}
+            | identifier                  {$$ = [$1];}
             ;
 
 ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
@@ -121,8 +127,20 @@ ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, this._$.f
 PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
       ;
 
+
+PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
+        ;
+        
 PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
         ;
+
+WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, _$.first_line, _$.first_column);}
+      ;
+
+
+
+CONDICION : '(' EXPRESION ')' {$$ = $2;}
+          ;
 
 BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
                      | '{' '}' {$$ = [];}
