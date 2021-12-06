@@ -130,9 +130,6 @@ PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,thi
 
 PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
         ;
-        
-PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
-        ;
 
 WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, _$.first_line, _$.first_column);}
       ;
