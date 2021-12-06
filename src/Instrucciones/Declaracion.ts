@@ -29,16 +29,18 @@ export class Declaracion extends Nodo {
     }
 
     execute(table: Tabla, tree: Arbol) {
+        var result = this.value.execute(table, tree);
+        if (result instanceof Exception) {
+            return result;
+        }
+
+        console.log("result ",result);
         for (let i = 0; i < this.identifier.length; i++) {
             const identifier = this.identifier[i];
-            var result = this.value.execute(table, tree);
-            if (result instanceof Exception) {
-                return result;
-            }
-
+            
             if (this.tipo.type === Tipos.DOUBLE) {
                 result = parseFloat(result);
-              } else if (this.tipo.type === Tipos.INT) {
+            } else if (this.tipo.type === Tipos.INT) {
                 if (this.tipo.type != this.value.tipo.type) {
                   const error = new Exception(
                     "Semántico",

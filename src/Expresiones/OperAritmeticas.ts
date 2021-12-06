@@ -53,7 +53,11 @@ export class OperAritmeticas extends Nodo {
           (this.opIzq.tipo.type === Tipos.DOUBLE &&
             this.opDer.tipo.type === Tipos.INT)
         ) {
+          
           this.tipo = new Tipo(Tipos.DOUBLE);
+          if (Number.isInteger(izqResult + derResult)) {
+            this.tipo = new Tipo(Tipos.INT);  
+          } 
           return izqResult + derResult;
         } else {
           const error = new Exception(
