@@ -9,6 +9,7 @@
     const { Identificador } = require('../Expresiones/Identificador');
     const { Print } = require('../Instrucciones/Print');
     const { Println } = require('../Instrucciones/Println');
+    const { OperAritmeticas } = require('../Expresiones/OperAritmeticas');
 %}
 
 %lex
@@ -20,6 +21,8 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 %%
 
 \s+                   /* skip whitespace */
+"//".*                              // comentario simple línea
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] // comentario multiple líneas
 
 {decimal}             return 'decimal' 
 {entero}              return 'entero' 
@@ -66,7 +69,9 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "char"                return 'char'
 {identifier}          return 'identifier'
 
-<<EOF>>	          return 'EOF'
+<<EOF>>                 return 'EOF';
+
+.                       { console.error('Error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column); }
 
 /lex
 %left 'else'
@@ -97,7 +102,7 @@ INSTRUCCION : MAIN {$$ = $1;}
             | PRINTLN {$$ = $1;}
             ;
 
-MAIN : 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($4, _$.first_line, _$.first_column);}
+MAIN : 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($4, this._$.first_line,this._$.first_column);}
      ;
 
 TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
@@ -116,13 +121,17 @@ LISTA_VAR : LISTA_VAR ',' identifier      {$$.push($3);}
             | identifier                  {$$ = [$1];}
             ;
 
-ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, _$.first_line, _$.first_column);}
+ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
            ;
 
-PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, _$.first_line, _$.first_column);}
+PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
       ;
 
+
 PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
+        ;
+        
+PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
         ;
 
 WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, _$.first_line, _$.first_column);}
@@ -137,13 +146,13 @@ BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
                      | '{' '}' {$$ = [];}
                      ;
 
-EXPRESION : EXPRESION '+' EXPRESION		    
-          | EXPRESION '-' EXPRESION		    
-          | EXPRESION '*' EXPRESION		   
-          | EXPRESION '/' EXPRESION	         
-          | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), _$.first_line, _$.first_column);}
-          | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), _$.first_line, _$.first_column);}
-          | identifier			            {$$ = new Identificador($1, _$.first_line, _$.first_column);}
-          | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), _$.first_line, _$.first_column); }
+EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
+          | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
+          | EXPRESION '*' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
+          | EXPRESION '/' EXPRESION	            {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
+          | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
+          | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
+          | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
+          | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
           | '(' EXPRESION ')'
           ;

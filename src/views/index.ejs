@@ -9,22 +9,32 @@
     <link rel="stylesheet" href="/css/dracula.css" />
     <link rel="stylesheet" href="/css/bootstrap.css" />
     <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
   </head>
 
   <body>
     <div class="header">
       <h1>Quetzal OCL2</h1>
     </div>
-    <button class="btn btn-primary" >Ejecutar</button>
     <form method="post" action="/ejecutar" id="form">
       <div class="compilador">
         <div class="content-interprete">
           <h3>Interprete</h3>
           <% if (codigo_fuente) { %>
-            <textarea id="codigo_fuente" name="codigo_fuente"><%= codigo_fuente %></textarea>
+          <textarea id="codigo_fuente" name="codigo_fuente" value="'prueba'">
+<%= codigo_fuente %></textarea
+          >
           <% } else {%>
-            <textarea id="codigo_fuente" name="codigo_fuente"></textarea>
+          <textarea
+            id="codigo_fuente"
+            name="codigo_fuente"
+            value="'prueba'"
+          ></textarea>
           <%}%>
         </div>
         <div class="content-consola">
@@ -32,7 +42,12 @@
           <% if (consola) { %>
             <textarea class="consola" id="consola" name="consola" readonly> <%=consola%></textarea>
           <% } else {%>
-            <textarea class="consola" id="consola" name="consola" readonly ></textarea>
+          <textarea
+            class="consola"
+            id="consola"
+            name="consola"
+            readonly
+          ></textarea>
           <%}%>
         </div>
       </div>
@@ -72,7 +87,6 @@
         mode: "javascript",
         theme: "dracula",
       });
-
       editor.setSize("100%", "100%");
     </script>
   </body>
