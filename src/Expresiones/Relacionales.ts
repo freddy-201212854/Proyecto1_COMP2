@@ -111,14 +111,10 @@ export class Relacionales extends Nodo {
       }
     } else if (this.operador === "<=") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT)
       ) {
         return LeftResult <= RightResult;
       } else {
@@ -168,14 +164,10 @@ export class Relacionales extends Nodo {
       }
     } else if (this.operador === "==") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT)
       ) {
         return LeftResult == RightResult;
       } else if (
