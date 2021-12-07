@@ -10,6 +10,8 @@
     const { Print } = require('../Instrucciones/Print');
     const { Println } = require('../Instrucciones/Println');
     const { OperAritmeticas } = require('../Expresiones/OperAritmeticas');
+    const { Relacionales } = require('../Expresiones/Relacionales');
+    const { Logicas } = require('../Expresiones/Logicas');
 %}
 
 %lex
@@ -153,6 +155,17 @@ EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', 
           | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
           | EXPRESION '*' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
           | EXPRESION '/' EXPRESION	            {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
+          
+          | EXPRESION '<' EXPRESION		    { $$ = new Relacionales($1, $3, '<', this._$.first_line, this._$.first_column); }
+          | EXPRESION '>' EXPRESION		    { $$ = new Relacionales($1, $3, '>', this._$.first_line, this._$.first_column); }
+          | EXPRESION '>' '=' EXPRESION	    { $$ = new Relacionales($1, $3, '>=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '<' '=' EXPRESION	    { $$ = new Relacionales($1, $3, '<=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '==' EXPRESION	    { $$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
+          | EXPRESION '!=' EXPRESION	    { $$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
+          
+          | EXPRESION '||' EXPRESION	    { $$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
+          | EXPRESION '&&' EXPRESION	    { $$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
+
           | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
           | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
           | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}

@@ -53,11 +53,10 @@ export class OperAritmeticas extends Nodo {
           (this.opIzq.tipo.type === Tipos.DOUBLE &&
             this.opDer.tipo.type === Tipos.INT)
         ) {
-          
           this.tipo = new Tipo(Tipos.DOUBLE);
           if (Number.isInteger(izqResult + derResult)) {
-            this.tipo = new Tipo(Tipos.INT);  
-          } 
+            this.tipo = new Tipo(Tipos.INT);
+          }
           return izqResult + derResult;
         } else {
           const error = new Exception(
@@ -72,10 +71,19 @@ export class OperAritmeticas extends Nodo {
         }
       } else if (this.operador === "-") {
         if (
-          this.opIzq.tipo.type === Tipos.NUMERIC &&
-          this.opDer.tipo.type === Tipos.NUMERIC
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.INT) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.INT)
         ) {
-          this.tipo = new Tipo(Tipos.NUMERIC);
+          this.tipo = new Tipo(Tipos.DOUBLE);
+          if (Number.isInteger(izqResult + derResult)) {
+            this.tipo = new Tipo(Tipos.INT);
+          }
           return izqResult - derResult;
         } else {
           const error = new Exception(
@@ -90,10 +98,19 @@ export class OperAritmeticas extends Nodo {
         }
       } else if (this.operador === "*") {
         if (
-          this.opIzq.tipo.type === Tipos.NUMERIC &&
-          this.opDer.tipo.type === Tipos.NUMERIC
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.INT) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.INT)
         ) {
-          this.tipo = new Tipo(Tipos.NUMERIC);
+          this.tipo = new Tipo(Tipos.DOUBLE);
+          if (Number.isInteger(izqResult + derResult)) {
+            this.tipo = new Tipo(Tipos.INT);
+          }
           return izqResult * derResult;
         } else {
           const error = new Exception(
@@ -108,10 +125,19 @@ export class OperAritmeticas extends Nodo {
         }
       } else if (this.operador === "/") {
         if (
-          this.opIzq.tipo.type === Tipos.NUMERIC &&
-          this.opDer.tipo.type === Tipos.NUMERIC
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.INT) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.INT &&
+            this.opDer.tipo.type === Tipos.DOUBLE) ||
+          (this.opIzq.tipo.type === Tipos.DOUBLE &&
+            this.opDer.tipo.type === Tipos.INT)
         ) {
-          this.tipo = new Tipo(Tipos.NUMERIC);
+          this.tipo = new Tipo(Tipos.DOUBLE);
+          if (Number.isInteger(izqResult + derResult)) {
+            this.tipo = new Tipo(Tipos.INT);
+          }
           if (derResult === 0) {
             const error = new Exception(
               "Semántico",
