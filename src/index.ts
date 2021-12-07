@@ -45,6 +45,7 @@ app.post("/ejecutar", (req, res) => {
     }
   });
 
+  console.log("lo quer viene en consola es ",arbolAST.console);
   res.render('views/index', {
     codigo_fuente,
     consola: arbolAST.console,
