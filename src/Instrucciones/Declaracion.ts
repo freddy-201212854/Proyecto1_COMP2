@@ -33,8 +33,6 @@ export class Declaracion extends Nodo {
         if (result instanceof Exception) {
             return result;
         }
-
-        console.log("result ",result);
         for (let i = 0; i < this.identifier.length; i++) {
             const identifier = this.identifier[i];
             

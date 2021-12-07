@@ -64,6 +64,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "string"              return 'string'
 "boolean"             return 'boolean'
 "int"                 return 'int'
+"void"                return 'void'
 "null"                return 'null'
 "double"              return 'double'
 "char"                return 'char'
@@ -102,7 +103,7 @@ INSTRUCCION : MAIN {$$ = $1;}
             | PRINTLN {$$ = $1;}
             ;
 
-MAIN : 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($4, this._$.first_line,this._$.first_column);}
+MAIN : TIPO 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($1, $5, this._$.first_line,this._$.first_column);}
      ;
 
 TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
@@ -111,6 +112,7 @@ TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
      | 'double' {$$ = new Tipo(Tipos.DOUBLE);}
      | 'char' {$$ = new Tipo(Tipos.CHAR);}
      | 'null' {$$ = new Tipo(Tipos.NULL);}
+     | 'void' {$$ = new Tipo(Tipos.VOID);}
      ;
 
 DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, [$2], $4, _$.first_line, _$.first_column);}
@@ -124,11 +126,11 @@ LISTA_VAR : LISTA_VAR ',' identifier      {$$.push($3);}
 ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
            ;
 
-PRINT : 'print' '(' EXPRESION ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
+PRINT : 'print' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
       ;
 
 
-PRINTLN : 'println' '(' EXPRESION ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
+PRINTLN : 'println' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
         ;
 
 WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, _$.first_line, _$.first_column);}
@@ -142,6 +144,10 @@ CONDICION : '(' EXPRESION ')' {$$ = $2;}
 BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
                      | '{' '}' {$$ = [];}
                      ;
+
+LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
+            | EXPRESION                                  {$$ = [$1];}
+            ;
 
 EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
           | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}

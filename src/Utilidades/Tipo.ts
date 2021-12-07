@@ -41,6 +41,8 @@ export class Tipo{
             return 'char';
         }else if(this.type === Tipos.NULL){
             return 'null';
+        }else if(this.type === Tipos.VOID){
+            return 'void';
         }
     }
 }
