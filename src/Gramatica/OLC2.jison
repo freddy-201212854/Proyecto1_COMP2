@@ -12,6 +12,7 @@
     const { OperAritmeticas } = require('../Expresiones/OperAritmeticas');
     const { Relacionales } = require('../Expresiones/Relacionales');
     const { Logicas } = require('../Expresiones/Logicas');
+    const { While } = require('../Instrucciones/While');
 %}
 
 %lex
@@ -103,6 +104,7 @@ INSTRUCCION : MAIN {$$ = $1;}
             | ASIGNACION {$$ = $1;}
             | PRINT {$$ = $1;}
             | PRINTLN {$$ = $1;}
+            | WHILE {$$ = $1;}
             ;
 
 MAIN : TIPO 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($1, $5, this._$.first_line,this._$.first_column);}
@@ -158,8 +160,8 @@ EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', 
           
           | EXPRESION '<' EXPRESION		    { $$ = new Relacionales($1, $3, '<', this._$.first_line, this._$.first_column); }
           | EXPRESION '>' EXPRESION		    { $$ = new Relacionales($1, $3, '>', this._$.first_line, this._$.first_column); }
-          | EXPRESION '>' '=' EXPRESION	    { $$ = new Relacionales($1, $3, '>=', this._$.first_line, this._$.first_column); }
-          | EXPRESION '<' '=' EXPRESION	    { $$ = new Relacionales($1, $3, '<=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '>' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '>=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '<' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '<=', this._$.first_line, this._$.first_column); }
           | EXPRESION '==' EXPRESION	    { $$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
           | EXPRESION '!=' EXPRESION	    { $$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
           
@@ -170,5 +172,5 @@ EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', 
           | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
           | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
           | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
-          | '(' EXPRESION ')'
+          | '(' EXPRESION ')'                   {$$=$2}
           ;
