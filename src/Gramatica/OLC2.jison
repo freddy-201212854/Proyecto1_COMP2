@@ -34,6 +34,8 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 {stringliteral}       return 'STRING_LITERAL'
 "*"                   return '*'
 "/"                   return '/'
+"%"                   return '%'
+"&"                   return '&'
 ";"                   return ';'
 ","                   return ','
 "-"                   return '-'
@@ -55,6 +57,11 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "]"                   return ']'
 "{"                   return '{'
 "}"                   return '}'
+"pow"                 return 'pow'
+"sqrt"                return 'sqrt'
+"sin"                 return 'sin'
+"cos"                 return 'cos'
+"tan"                 return 'tan'
 "true"                return 'true'
 "false"               return 'false'
 "print"               return 'print'
@@ -89,7 +96,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 %left '==', '!='
 %left '>=', '<=', '<', '>'
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right '!'
 %left UMENOS
 
@@ -177,21 +184,26 @@ LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
 EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
           | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
           | EXPRESION '*' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
-          | EXPRESION '/' EXPRESION	            {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
+          | EXPRESION '/' EXPRESION	          {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
           
+          | EXPRESION '%' EXPRESION	          {$$ = new OperAritmeticas($1, $3, '%', this._$.first_line,this._$.first_column);}
+          | 'pow' '(' EXPRESION ',' EXPRESION ')'	            {$$ = new OperAritmeticas($3, $5, 'pow', this._$.first_line,this._$.first_column);}
+          | 'sqrt' '(' EXPRESION ')'	    {$$ = new OperAritmeticas($3,null, 'sqrt', this._$.first_line,this._$.first_column);}
+          | 'sin' '(' EXPRESION ')'	          {$$ = new OperAritmeticas($3,null, 'sin', this._$.first_line,this._$.first_column);}
+          | 'cos' '(' EXPRESION ')'	          {$$ = new OperAritmeticas($3,null, 'cos', this._$.first_line,this._$.first_column);}
+          | 'tan' '(' EXPRESION ')'	          {$$ = new OperAritmeticas($3,null, 'tan', this._$.first_line,this._$.first_column);}
+
           | EXPRESION '<' EXPRESION		    { $$ = new Relacionales($1, $3, '<', this._$.first_line, this._$.first_column); }
           | EXPRESION '>' EXPRESION		    { $$ = new Relacionales($1, $3, '>', this._$.first_line, this._$.first_column); }
           | EXPRESION '>' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '>=', this._$.first_line, this._$.first_column); }
           | EXPRESION '<' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '<=', this._$.first_line, this._$.first_column); }
           | EXPRESION '==' EXPRESION	    { $$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
           | EXPRESION '!=' EXPRESION	    { $$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
-          
           | EXPRESION '||' EXPRESION	    { $$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
           | EXPRESION '&&' EXPRESION	    { $$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
-
           | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
           | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
-          | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
-          | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
-          | '(' EXPRESION ')'                   {$$=$2;}
+          | identifier			          {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
+          | STRING_LITERAL                    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
+          | '(' EXPRESION ')'                 {$$=$2;}
           ;
