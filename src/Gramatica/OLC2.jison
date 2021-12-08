@@ -154,8 +154,14 @@ FOR   : 'for' '(' EXPRESSION_AUMENTO ';' EXPRESION ';' EXPRESSION_AUMENTO ')' BL
       | 'for' EXPRESION 'in' EXPRESION BLOQUE_INSTRUCCIONES
       ;
 
-EXPRESSION_AUMENTO : identifier '=' EXPRESION {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
+EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}
+                  | TIPO identifier VARIABLES_INICIALIZADAS {$$ = new Declaracion($1, [$2], $3, this._$.first_line, this._$.first_column);}
                   ;
+
+VARIABLES_INICIALIZADAS : identifier '=' EXPRESION {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
+                        | EXPRESION   {$$ = $1;} 
+                        | '=' EXPRESION {$$ = $2;} 
+                        ;
 
 CONDICION : '(' EXPRESION ')' {$$ = $2;}
           ;

@@ -3,6 +3,7 @@ import { Tabla } from "../Simbolos/Tabla";
 import { Arbol } from "../Simbolos/Arbol";
 import { Exception } from "../Utilidades/Exception";
 import { Tipos } from "../Utilidades/Tipo";
+import { Identificador } from "../Expresiones/Identificador";
 
 /**
  * @class Ejecuta una serie de instrucciones en caso la condicion sea verdadera sino ejecuta las instrucciones falsas
@@ -31,10 +32,20 @@ export class For extends Nodo {
     execute(table: Tabla, tree: Arbol) {
         const newtable = new Tabla(table);
         let result: Nodo;
-        let exprInicial = this.expresionInicial.execute(newtable, tree);
+        
+        if (this.expresionInicial instanceof Identificador) {
+            const error = new Exception('Semantico', `Se esperaba una expresion numerica`, this.expresionInicial.linea, this.expresionInicial.columna);
+            tree.excepciones.push(error);
+            tree.console.push(error.toString());
+            return error;
+        }
+
+        result = this.expresionInicial.execute(newtable, tree);
+        console.log("Inicializacion For ", this.expresionInicial);
+
         if (this.expresionInicial.tipo.type !== Tipos.INT) {
             if (this.expresionInicial.tipo.type !== Tipos.DOUBLE) {
-                const error = new Exception('Semantico', `No se puede asignar el tipo ` + this.expresionInicial.tipo.toString(), this.linea, this.columna);
+                const error = new Exception('Semantico', `No se puede asignar el tipo ` + this.expresionInicial.tipo.toString(), this.expresionInicial.linea, this.expresionInicial.columna);
                 tree.excepciones.push(error);
                 tree.console.push(error.toString());
                 return error;
@@ -53,12 +64,27 @@ export class For extends Nodo {
             }
 
             if (this.condition.tipo.type !== Tipos.BOOLEAN) {
-                const error = new Exception('Semantico', `Se esperaba una expresion booleana para la condicion`, this.linea, this.columna);
+                const error = new Exception('Semantico', `Se esperaba una expresion booleana para la condicion`, this.condition.linea, this.condition.columna);
                 tree.excepciones.push(error);
                 tree.console.push(error.toString());
                 return error;
             }
             if (result) {
+                result = this.expresionAumento.execute(newtable, tree);
+                console.log("expresion aumento", result);
+                if (result instanceof Exception) {
+                    return result;
+                }
+
+                if (this.expresionAumento.tipo.type !== Tipos.INT) {
+                    if (this.expresionAumento.tipo.type !== Tipos.DOUBLE) {
+                        const error = new Exception('Semantico', `No se puede asignar el tipo ` + this.expresionAumento.tipo.toString(), this.expresionAumento.linea, this.expresionAumento.columna);
+                        tree.excepciones.push(error);
+                        tree.console.push(error.toString());
+                        return error;
+                    }
+                }
+                
                 let res: Nodo;
                 let error: Boolean = false;
                 for (let i = 0; i < this.List.length; i++) {
@@ -71,12 +97,6 @@ export class For extends Nodo {
 
                 if (error) {
                     return res;
-                }
-
-                result = this.expresionAumento.execute(newtable, tree);
-                console.log("expresion aumento", result);
-                if (result instanceof Exception) {
-                    return result;
                 }
             }
         } while (result);
