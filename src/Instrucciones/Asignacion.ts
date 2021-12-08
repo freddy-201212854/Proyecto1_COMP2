@@ -39,16 +39,21 @@ export class Asignacion extends Nodo {
             tree.console.push(error.toString());
             return error;
         }
-
-
-        if (this.value.tipo.type != variable.Tipo.type) {
-            const error = new Exception('Semantico', `No se puede asignar la variable porque los tipos no coinciden.`, this.linea, this.columna);
-            tree.excepciones.push(error);
-            tree.console.push(error.toString());
-            return error;
+        console.log("Asignacion: ", variable);
+        console.log(this.value.tipo.toString(), this.value.tipo.toString());
+        if(variable.Tipo.type !== Tipos.DOUBLE){
+            if (this.value.tipo.type != variable.Tipo.type) {
+                const error = new Exception('Semantico', `No se puede asignar la variable porque los tipos no coinciden.`, this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+                return error;
+            }
         }
 
+
         variable.valor = result;
-        return null;
+        this.tipo = variable.Tipo;
+        console.log("Asignacion: ", variable);
+        return variable;
     }
 }

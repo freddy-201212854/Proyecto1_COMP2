@@ -7,9 +7,11 @@ import { Tipos } from "../Utilidades/Tipo";
 /**
  * @class Ejecuta una serie de instrucciones en caso la condicion sea verdadera sino ejecuta las instrucciones falsas
  */
-export class While extends Nodo {
+export class For extends Nodo {
     condition: Nodo;
     List: Array<Nodo>;
+    expresionInicial: Nodo;
+    expresionAumento: Nodo;
 
     /**
      * @constructor Crea el nodo instruccion para la sentencia IF
@@ -18,18 +20,34 @@ export class While extends Nodo {
      * @param line Linea de la sentencia while
      * @param column Columna de la sentencia while
      */
-    constructor(condition: Nodo, List: Array<Nodo>, line: Number, column: Number) {
+    constructor(expressionInitial: Nodo, expressionLogic: Nodo, expressionAumento: Nodo, List: Array<Nodo>, line: Number, column: Number) {
         super(null, line, column);
-        this.condition = condition;
+        this.condition = expressionLogic;
+        this.expresionInicial = expressionInitial;
+        this.expresionAumento = expressionAumento;
         this.List = List;
     }
 
     execute(table: Tabla, tree: Arbol) {
         const newtable = new Tabla(table);
         let result: Nodo;
+        let exprInicial = this.expresionInicial.execute(newtable, tree);
+        if (this.expresionInicial.tipo.type !== Tipos.INT) {
+            if (this.expresionInicial.tipo.type !== Tipos.DOUBLE) {
+                const error = new Exception('Semantico', `No se puede asignar el tipo ` + this.expresionInicial.tipo.toString(), this.linea, this.columna);
+                tree.excepciones.push(error);
+                tree.console.push(error.toString());
+                return error;
+            }
+        }
+        if (result instanceof Exception) {
+            return result;
+        }
+
+        //return null;
         do {
             result = this.condition.execute(newtable, tree);
-            console.log("resultado while ",result);
+            console.log("Condiciona For ", result, this.condition.tipo);
             if (result instanceof Exception) {
                 return result;
             }
@@ -41,7 +59,7 @@ export class While extends Nodo {
                 return error;
             }
             if (result) {
-                let res: Nodo; 
+                let res: Nodo;
                 let error: Boolean = false;
                 for (let i = 0; i < this.List.length; i++) {
                     res = this.List[i].execute(newtable, tree);
@@ -51,11 +69,18 @@ export class While extends Nodo {
                     }
                 }
 
-                if(error){
+                if (error) {
                     return res;
+                }
+
+                result = this.expresionAumento.execute(newtable, tree);
+                console.log("expresion aumento", result);
+                if (result instanceof Exception) {
+                    return result;
                 }
             }
         } while (result);
+
         return null;
     }
 }

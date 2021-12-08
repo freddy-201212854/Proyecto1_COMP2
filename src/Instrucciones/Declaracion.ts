@@ -56,6 +56,7 @@ export class Declaracion extends Nodo {
             simbol = new Simbolo(this.tipo, identifier, result);
             const res = table.setVariable(simbol);
             if (res != null) {
+                console.log("el error es desde aca ",res);
                 const error = new Exception('Semantico', res, this.linea, this.columna);
                 tree.excepciones.push(error);
                 tree.console.push(error.toString());

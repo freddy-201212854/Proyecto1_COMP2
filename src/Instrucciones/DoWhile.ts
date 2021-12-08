@@ -7,7 +7,7 @@ import { Tipos } from "../Utilidades/Tipo";
 /**
  * @class Ejecuta una serie de instrucciones en caso la condicion sea verdadera sino ejecuta las instrucciones falsas
  */
-export class While extends Nodo {
+export class DoWhile extends Nodo {
     condition: Nodo;
     List: Array<Nodo>;
 
@@ -27,35 +27,31 @@ export class While extends Nodo {
     execute(table: Tabla, tree: Arbol) {
         const newtable = new Tabla(table);
         let result: Nodo;
-        do {
-            result = this.condition.execute(newtable, tree);
-            console.log("resultado while ",result);
-            if (result instanceof Exception) {
-                return result;
+        if (this.List.length > 0) {
+            for (let i = 0; i < this.List.length; i++) {
+                const res = this.List[i].execute(newtable, tree);
             }
+            
+            do {
+                result = this.condition.execute(newtable, tree);
+                if (result instanceof Exception) {
+                    return result;
+                }
+                console.log("condicional es ", result);
 
-            if (this.condition.tipo.type !== Tipos.BOOLEAN) {
-                const error = new Exception('Semantico', `Se esperaba una expresion booleana para la condicion`, this.linea, this.columna);
-                tree.excepciones.push(error);
-                tree.console.push(error.toString());
-                return error;
-            }
-            if (result) {
-                let res: Nodo; 
-                let error: Boolean = false;
-                for (let i = 0; i < this.List.length; i++) {
-                    res = this.List[i].execute(newtable, tree);
-                    if (res instanceof Exception) {
-                        error = true;
-                        break;
+                if (this.condition.tipo.type !== Tipos.BOOLEAN) {
+                    const error = new Exception('Semantico', `Se esperaba una expresion booleana para la condicion`, this.linea, this.columna);
+                    tree.excepciones.push(error);
+                    tree.console.push(error.toString());
+                    return error;
+                }
+                if (result) {
+                    for (let i = 0; i < this.List.length; i++) {
+                        const res = this.List[i].execute(newtable, tree);
                     }
                 }
-
-                if(error){
-                    return res;
-                }
-            }
-        } while (result);
+            } while (result);
+        }
         return null;
     }
 }
