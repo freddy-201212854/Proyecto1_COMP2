@@ -13,6 +13,8 @@
     const { Relacionales } = require('../Expresiones/Relacionales');
     const { Logicas } = require('../Expresiones/Logicas');
     const { While } = require('../Instrucciones/While');
+    const { DoWhile } = require('../Instrucciones/DoWhile');
+    const { For } = require('../Instrucciones/For');
 %}
 
 %lex
@@ -62,6 +64,9 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "break"               return 'break'
 "continue"            return 'continue'
 "while"               return 'while'
+"do"                  return 'do'
+"for"                 return 'for'
+"in"                  return 'in'
 "main"                return 'main'
 "numeric"             return 'numeric'
 "string"              return 'string'
@@ -105,6 +110,8 @@ INSTRUCCION : MAIN {$$ = $1;}
             | PRINT {$$ = $1;}
             | PRINTLN {$$ = $1;}
             | WHILE {$$ = $1;}
+            | DOWHILE {$$ = $1;}
+            | FOR {$$ = $1;}
             ;
 
 MAIN : TIPO 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($1, $5, this._$.first_line,this._$.first_column);}
@@ -119,8 +126,8 @@ TIPO : 'string' {$$ = new Tipo(Tipos.STRING);}
      | 'void' {$$ = new Tipo(Tipos.VOID);}
      ;
 
-DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, [$2], $4, _$.first_line, _$.first_column);}
-            | TIPO LISTA_VAR ';' {$$ = new Declaracion($1, $2, new Primitivo($1, null, _$.first_line, _$.first_column), _$.first_line, _$.first_column);}
+DECLARACION : TIPO identifier '=' EXPRESION ';' {$$ = new Declaracion($1, [$2], $4, this._$.first_line, this._$.first_column);}
+            | TIPO LISTA_VAR ';' {$$ = new Declaracion($1, $2, new Primitivo($1, null, this._$.first_line, this._$.first_column), this._$.first_line, this._$.first_column);}
             ;
 
 LISTA_VAR : LISTA_VAR ',' identifier      {$$.push($3);}
@@ -134,13 +141,27 @@ PRINT : 'print' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Print($3, this._$.first_
       ;
 
 
-PRINTLN : 'println' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Println($3, _$.first_line, _$.first_column);}
+PRINTLN : 'println' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Println($3, this._$.first_line, this._$.first_column);}
         ;
 
-WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, _$.first_line, _$.first_column);}
+WHILE : 'while' CONDICION BLOQUE_INSTRUCCIONES {$$ = new While($2, $3, this._$.first_line, this._$.first_column);}
       ;
 
+DOWHILE : 'do' BLOQUE_INSTRUCCIONES 'while' CONDICION ';'{$$ = new DoWhile($4, $2, this._$.first_line, this._$.first_column);}
+        ;
 
+FOR   : 'for' '(' EXPRESSION_AUMENTO ';' EXPRESION ';' EXPRESSION_AUMENTO ')' BLOQUE_INSTRUCCIONES {$$ = new For($3, $5, $7, $9, this._$.first_line, this._$.first_column);}
+      | 'for' EXPRESION 'in' EXPRESION BLOQUE_INSTRUCCIONES
+      ;
+
+EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}
+                  | TIPO identifier VARIABLES_INICIALIZADAS {$$ = new Declaracion($1, [$2], $3, this._$.first_line, this._$.first_column);}
+                  ;
+
+VARIABLES_INICIALIZADAS : identifier '=' EXPRESION {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
+                        | EXPRESION   {$$ = $1;} 
+                        | '=' EXPRESION {$$ = $2;} 
+                        ;
 
 CONDICION : '(' EXPRESION ')' {$$ = $2;}
           ;
@@ -172,5 +193,5 @@ EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', 
           | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
           | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
           | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
-          | '(' EXPRESION ')'                   {$$=$2}
+          | '(' EXPRESION ')'                   {$$=$2;}
           ;

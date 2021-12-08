@@ -7,7 +7,7 @@ import { Tipos } from "../Utilidades/Tipo";
 /**
  * @class Ejecuta una serie de instrucciones en caso la condicion sea verdadera sino ejecuta las instrucciones falsas
  */
-export class While extends Nodo {
+export class ForIn extends Nodo {
     condition: Nodo;
     List: Array<Nodo>;
 
@@ -29,7 +29,6 @@ export class While extends Nodo {
         let result: Nodo;
         do {
             result = this.condition.execute(newtable, tree);
-            console.log("resultado while ",result);
             if (result instanceof Exception) {
                 return result;
             }
@@ -41,18 +40,8 @@ export class While extends Nodo {
                 return error;
             }
             if (result) {
-                let res: Nodo; 
-                let error: Boolean = false;
                 for (let i = 0; i < this.List.length; i++) {
-                    res = this.List[i].execute(newtable, tree);
-                    if (res instanceof Exception) {
-                        error = true;
-                        break;
-                    }
-                }
-
-                if(error){
-                    return res;
+                    const res = this.List[i].execute(newtable, tree);
                 }
             }
         } while (result);
