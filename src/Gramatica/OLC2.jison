@@ -15,6 +15,10 @@
     const { While } = require('../Instrucciones/While');
     const { DoWhile } = require('../Instrucciones/DoWhile');
     const { For } = require('../Instrucciones/For');
+    const { Condiciones } = require('../Instrucciones/Condiciones');
+    const { Continue } = require('../Expresiones/Continue');
+    const { Break} = require('../Expresiones/Break');
+
 %}
 
 %lex
@@ -35,7 +39,6 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "*"                   return '*'
 "/"                   return '/'
 "%"                   return '%'
-"&"                   return '&'
 ";"                   return ';'
 ","                   return ','
 "-"                   return '-'
@@ -49,6 +52,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "!="                  return '!='
 "||"                  return '||'
 "&&"                  return '&&'
+"&"                   return '&'
 "!"                   return '!'
 "="                   return '='
 "("                   return '('
@@ -116,6 +120,7 @@ INSTRUCCION : MAIN {$$ = $1;}
             | ASIGNACION {$$ = $1;}
             | PRINT {$$ = $1;}
             | PRINTLN {$$ = $1;}
+            | IF {$$ = $1;}
             | WHILE {$$ = $1;}
             | DOWHILE {$$ = $1;}
             | FOR {$$ = $1;}
@@ -160,6 +165,11 @@ DOWHILE : 'do' BLOQUE_INSTRUCCIONES 'while' CONDICION ';'{$$ = new DoWhile($4, $
 FOR   : 'for' '(' EXPRESSION_AUMENTO ';' EXPRESION ';' EXPRESSION_AUMENTO ')' BLOQUE_INSTRUCCIONES {$$ = new For($3, $5, $7, $9, this._$.first_line, this._$.first_column);}
       | 'for' EXPRESION 'in' EXPRESION BLOQUE_INSTRUCCIONES
       ;
+
+IF : 'if' CONDICION BLOQUE_INSTRUCCIONES {$$ = new Condiciones($2, $3, [], _$.first_line, _$.first_column);}
+   | 'if' CONDICION BLOQUE_INSTRUCCIONES 'else' BLOQUE_INSTRUCCIONES {$$ = new Condiciones($2, $3, $5, _$.first_line, _$.first_column);}
+   | 'if' CONDICION BLOQUE_INSTRUCCIONES 'else' IF {$$ = new Condiciones($2, $3, [$5], _$.first_line, _$.first_column);}
+   ;
 
 EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}
                   | TIPO identifier VARIABLES_INICIALIZADAS {$$ = new Declaracion($1, [$2], $3, this._$.first_line, this._$.first_column);}
