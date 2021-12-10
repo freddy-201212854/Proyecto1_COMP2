@@ -13,7 +13,7 @@ export class Declaracion extends Nodo {
     tipo: Tipo;
     identifier: String;
     value: Nodo;
-
+    posicion: number;
     /**
      * @constructor Crea el nodo instruccion para la sentencia Declaracion
      * @param tipo Tipo de la variable
@@ -26,6 +26,7 @@ export class Declaracion extends Nodo {
         super(tipo, line, column);
         this.identifier = identifier;
         this.value = value;
+        this.posicion = 0;
     }
 
     execute(table: Tabla, tree: Arbol) {
@@ -53,7 +54,7 @@ export class Declaracion extends Nodo {
             }
             
             let simbol: Simbolo;
-            simbol = new Simbolo(this.tipo, identifier, result);
+            simbol = new Simbolo(this.tipo, identifier, result, this.posicion);
             const res = table.setVariable(simbol);
             if (res != null) {
                 console.log("el error es desde aca ",res);
@@ -63,5 +64,9 @@ export class Declaracion extends Nodo {
             }   
         }
         return null;
+    }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
     }
 }

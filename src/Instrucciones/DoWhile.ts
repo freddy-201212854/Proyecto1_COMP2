@@ -54,4 +54,8 @@ export class DoWhile extends Nodo {
         }
         return null;
     }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
+    }
 }

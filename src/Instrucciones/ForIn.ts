@@ -47,4 +47,8 @@ export class ForIn extends Nodo {
         } while (result);
         return null;
     }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
+    }
 }

@@ -15,15 +15,16 @@ export enum Tipos {
  */
 export class Tipo{
     type : Tipos;
-
+    dimensiones: Number;
     /**
      * 
      * @constructor Crea un nuevo tipo con el tipo primitivo indicado en el enum
      * @param type Tipo seleccionado para la variable o funcion
      * 
      */
-    constructor(type: Tipos){
+    constructor(type: Tipos, dimensiones: Number = 0){
         this.type = type;
+        this.dimensiones = dimensiones;
     }
 
     toString(){

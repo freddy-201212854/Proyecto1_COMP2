@@ -15,6 +15,9 @@
     const { While } = require('../Instrucciones/While');
     const { DoWhile } = require('../Instrucciones/DoWhile');
     const { For } = require('../Instrucciones/For');
+    const { Arreglo } = require('../Instrucciones/Arreglo');
+    const { Llamada } = require('../Instrucciones/Llamada');
+    const { Funcion } = require('../Instrucciones/Funcion');
 %}
 
 %lex
@@ -112,6 +115,8 @@ INSTRUCCION : MAIN {$$ = $1;}
             | WHILE {$$ = $1;}
             | DOWHILE {$$ = $1;}
             | FOR {$$ = $1;}
+            | FUNCION {$$ = $1;}
+            | LLAMADA {$$ = $1;}
             ;
 
 MAIN : TIPO 'main' '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Main($1, $5, this._$.first_line,this._$.first_column);}
@@ -174,6 +179,28 @@ LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
             | EXPRESION                                  {$$ = [$1];}
             ;
 
+ARREGLO : TIPO DIMENSIONES {$$ = new Arreglo($2, $3, this._$.first_line, this._$.first_column);}
+        ;
+
+DIMENSIONES : DIMENSIONES '[' EXPRESION ']' {$$ = $1; $$.push($3);}
+            | '[' EXPRESION ']' {$$ = [$2];}
+            ;
+
+LLAMADA : identifier '(' LISTA_EXPRESION ')' ';' {$$ = new Llamada($1, $3, this._$.first_line, this._$.first_column);}
+        | identifier '(' ')' ';' {$$ = new Llamada($1, [], this._$.first_line, this._$.first_column);} 
+        ;
+
+FUNCION : TIPO identifier '(' LISTA_PARAMETROS ')' BLOQUE_INSTRUCCIONES  {$$ = new Funcion($1, $2, $4, $6, this._$.first_line, this._$.first_column);}
+        | TIPO identifier '(' ')' BLOQUE_INSTRUCCIONES {$$ = new Funcion($1, $2, [], $5, this._$.first_line, this._$.first_column);}
+        ;
+
+LISTA_PARAMETROS : LISTA_PARAMETROS ',' PARAMETRO {$$ = $1; $$.push($3);}
+                 | PARAMETRO {$$ = [$1];}
+                 ;
+
+PARAMETRO : TIPO identifier {$$ = new Declaracion($1, $2, null, this._$.first_line, this._$.first_column)}
+          ;
+
 EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
           | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
           | EXPRESION '*' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
@@ -188,7 +215,8 @@ EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', 
           
           | EXPRESION '||' EXPRESION	    { $$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
           | EXPRESION '&&' EXPRESION	    { $$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
-
+          | ARREGLO				    { $$ = $1; } 
+          | LLAMADA				    { $$ = $1; } 
           | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
           | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
           | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}

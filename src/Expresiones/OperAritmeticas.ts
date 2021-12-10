@@ -205,4 +205,8 @@ export class OperAritmeticas extends Nodo {
       }
     }
   }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    return "";
+  }
 }

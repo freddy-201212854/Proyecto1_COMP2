@@ -56,4 +56,8 @@ export class Asignacion extends Nodo {
         console.log("Asignacion: ", variable);
         return variable;
     }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
+    }
 }
