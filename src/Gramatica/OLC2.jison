@@ -186,7 +186,7 @@ DIMENSIONES : DIMENSIONES '[' EXPRESION ']' {$$ = $1; $$.push($3);}
             | '[' EXPRESION ']' {$$ = [$2];}
             ;
 
-LLAMADA : identifier '(' LISTA_EXPRESION ')' ';' {$$ = new Llamada($1, $3, this._$.first_line, this._$.first_column);}
+LLAMADA : identifier '(' LISTA_EXPRESIONES ')' ';' {$$ = new Llamada($1, $3, this._$.first_line, this._$.first_column);}
         | identifier '(' ')' ';' {$$ = new Llamada($1, [], this._$.first_line, this._$.first_column);} 
         ;
 
@@ -198,7 +198,7 @@ LISTA_PARAMETROS : LISTA_PARAMETROS ',' PARAMETRO {$$ = $1; $$.push($3);}
                  | PARAMETRO {$$ = [$1];}
                  ;
 
-PARAMETRO : TIPO identifier {$$ = new Declaracion($1, $2, null, this._$.first_line, this._$.first_column)}
+PARAMETRO : TIPO identifier {$$ = new Declaracion($1, [$2], new Primitivo($1, null, this._$.first_line, this._$.first_column), this._$.first_line, this._$.first_column)}
           ;
 
 EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}

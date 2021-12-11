@@ -22,7 +22,6 @@ export class Println extends Nodo{
     execute(table: Tabla, tree: Arbol): any {
         this.expression.forEach(element => {
             const value = element.execute(table, tree);
-            console.log("elemento que viene ", value.toString());
             tree.console.push("\n" + value.toString());
         });
         

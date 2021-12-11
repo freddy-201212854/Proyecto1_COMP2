@@ -17,18 +17,13 @@ export class Llamada extends Nodo {
     }
 
     execute(tabla: Tabla, arbol: Arbol): any {
-        console.log('***********************************************');
-        console.log('Llamada');
-        console.log('***********************************************');
-        const newtable = new Tabla(tabla);
         this.nombre_funcion = this.identificador + '_';
         this.lista_expresiones.map(m => {
-            const type = m.execute(newtable, arbol);
-            this.nombre_funcion += type.toString() + '_';
+            const type = m.execute(tabla, arbol);
+            this.nombre_funcion += m.tipo.toString() + '_';
         });
         this.nombre_funcion = this.nombre_funcion.slice(0, this.nombre_funcion.length - 1);
-
-        var existeFuncion: SimboloFuncion = newtable.getFuncion(this.nombre_funcion);
+        var existeFuncion: SimboloFuncion = tabla.getFuncion(this.nombre_funcion);
         if (existeFuncion == null) {
             const excepcion = new Exception('Semantico', `No existe la funcion ${this.nombre_funcion}`, this.linea, this.columna);
             arbol.excepciones.push(excepcion);
@@ -36,9 +31,9 @@ export class Llamada extends Nodo {
             return excepcion;
         }
         this.tipo = existeFuncion.tipo;
-        console.log(`Llamada a funcion ${existeFuncion}`);
+        existeFuncion.funcion.setValoresParametros(this.lista_expresiones);
+        existeFuncion.funcion.execute(tabla, arbol);
         return existeFuncion;
-        //return this.tipo;
     }
 
     getC3D(tabla: Tabla, arbol: Arbol): String {

@@ -14,9 +14,9 @@ import { Exception } from "./Exception";
  * @param {arbol} arbol clase que nos ayuda a almacenar errores e instrucciones
  * @param {funcion} funcion objeto funcion que contiene los atributos necesarios para crear un nodo funcion
  */
-export function agregarFuncion(tabla: Tabla, arbol: Arbol, funcion: Funcion) {
+ export function agregarFuncion(tabla: Tabla, arbol: Arbol, funcion: Funcion) {
     // Para la funcion necesitamos: tipo, identificador, cantidad de parametros y tamaño de la funcion
-
+    
     const tipo = funcion.tipo;
 
     const identificador = funcion.nombre;
@@ -31,9 +31,12 @@ export function agregarFuncion(tabla: Tabla, arbol: Arbol, funcion: Funcion) {
     const simbolo = new SimboloFuncion(tipo, identificador, parametros, functionSize, funcion);
     const result = tabla.setFuncion(simbolo);
     if (result != null) {
-        arbol.excepciones.push(new Exception('Semantico', result, funcion.linea, funcion.columna));
+        const exception = new Exception('Semantico', result, funcion.linea, funcion.columna)
+        arbol.excepciones.push(exception);
+        arbol.console.push(exception.toString());
     }
 }
+
 
 /**
  * @function getFuncionSize Devuelve el tamaño de la funcion, 
@@ -49,7 +52,10 @@ export function getFuncionSize(tabla: Tabla, instrucciones: Array<Nodo>) {
         if (currentIns instanceof Declaracion) {
             size = size + 1;
             currentIns.posicion = tabla.getStack();
-        } else if (currentIns instanceof DoWhile || currentIns instanceof While) {
+        } /*else if (currentIns instanceof Si) {
+            size = size + getFuncionSize(tabla, currentIns.listaIf);
+            size = size + getFuncionSize(tabla, currentIns.listaElse);
+        }*/ else if (currentIns instanceof DoWhile || currentIns instanceof While) {
             size = size + getFuncionSize(tabla, currentIns.List);
         } else {
             continue;

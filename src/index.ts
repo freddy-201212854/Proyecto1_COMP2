@@ -6,6 +6,7 @@ import { Tabla } from "./Simbolos/Tabla";
 import { Exception } from "./Utilidades/Exception";
 import { Llamada } from "./Instrucciones/Llamada";
 import { Arbol } from "./Simbolos/Arbol";
+import { agregarFuncion } from "./Utilidades/common";
 
 const parser = require("./Gramatica/OLC2.js");
 const cors = require("cors");
@@ -35,9 +36,9 @@ app.post("/ejecutar", (req, res) => {
   }
 
   const arbolAST: Arbol = parser.parse(codigo_fuente);
-  
+
   const tabla = new Tabla(null);
-  arbolAST.execute(tabla, arbolAST);
+  //arbolAST.execute(tabla, arbolAST);
 
   /*arbolAST.instrucciones.forEach((m: any) => {
     if (!(m instanceof Main || m instanceof Declaracion || m instanceof Funcion || m instanceof Llamada)) {
@@ -50,7 +51,28 @@ app.post("/ejecutar", (req, res) => {
     }
   });*/
 
-  console.log("lo quer viene en consola es ",arbolAST.console);
+  arbolAST.instrucciones.map(m => {
+    if (m instanceof Funcion) {
+      tabla.setStack(0);
+      agregarFuncion(tabla, arbolAST, m);
+    }
+  });
+
+  let cantidadGlobales = 0;
+  arbolAST.instrucciones.map(m => {
+    if (m instanceof Declaracion) {
+      m.posicion = tabla.getHeap();
+      cantidadGlobales++;
+    }
+  });
+
+  arbolAST.instrucciones.map(m => {
+    if (!(m instanceof Funcion)) {
+      m.execute(tabla, arbolAST);
+    }
+  });
+
+  console.log("lo quer viene en consola es ", arbolAST.console);
   res.render('views/index', {
     codigo_fuente,
     consola: arbolAST.console,

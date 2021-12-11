@@ -1,13 +1,17 @@
 import { Nodo } from "../Abstracto/Nodo";
 import { Arbol } from "../Simbolos/Arbol";
+import { Simbolo } from "../Simbolos/Simbol";
 import { Tabla } from "../Simbolos/Tabla";
+import { Exception } from "../Utilidades/Exception";
 import { Tipo } from "../Utilidades/Tipo";
+import { Asignacion } from "./Asignacion";
 import { Declaracion } from "./Declaracion";
 
 export class Funcion extends Nodo {
     nombre: String;
     parametros: Array<Declaracion>;
     instrucciones: Array<Nodo>;
+    valoresParametros: Array<Nodo>;
 
     constructor(tipo: Tipo, nombre: String, parametros: Array<Declaracion>, instrucciones: Array<Nodo>, fila: number, columna: number) {
         super(tipo, fila, columna);
@@ -18,22 +22,33 @@ export class Funcion extends Nodo {
 
     execute(tabla: Tabla, arbol: Arbol): any {
         const newtable = new Tabla(tabla);
-        // Agregar los parametros a la TS
-        this.parametros.map(m => {
-            m.execute(newtable, arbol);
-        });
-
-        // validar que todas las instrucciones son validas semanticamente
-        console.log(this.instrucciones)
+        if (this.parametros.length == this.valoresParametros.length) {
+            for (var i = 0; i < this.parametros.length; i++) {
+                var d: Declaracion = this.parametros[i];
+                d.execute(tabla, arbol);
+                var a: Asignacion = new Asignacion(d.identifier[0], this.valoresParametros[i], d.linea, d.columna);
+                a.execute(tabla, arbol);
+                let variable: Simbolo;
+                variable = tabla.getVariable(d.identifier[0]);
+            }
+        } else {
+            const error = new Exception('Semantico', `La cantidad de parámetros enviada a la función.`, this.linea, this.columna);
+            arbol.excepciones.push(error);
+            arbol.console.push(error.toString());
+            return error;
+        }
         this.instrucciones.map(m => {
-            m.execute(newtable, arbol);
+            if (m !== null) {
+                m.execute(newtable, arbol);
+            }
         });
+        return null;
     }
 
     getIdentifier(): String {
         var nombre_funcion = this.nombre + '_';
         this.parametros.map(m => {
-            nombre_funcion += '_' + m.tipo.toString() ;
+            nombre_funcion += '_' + m.tipo.toString();
         });
         nombre_funcion = nombre_funcion.slice(0, nombre_funcion.length - 1);
         nombre_funcion += ")";
@@ -70,5 +85,9 @@ export class Funcion extends Nodo {
         return tipos_parametros.length == 0 ?
             `${nombre}` :
             `${nombre}_${tipos_parametros.join('_')}`;
+    }
+
+    setValoresParametros(a: Array<Nodo>) {
+        this.valoresParametros = a;
     }
 }

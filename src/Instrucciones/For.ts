@@ -41,7 +41,6 @@ export class For extends Nodo {
         }
 
         result = this.expresionInicial.execute(newtable, tree);
-        console.log("Inicializacion For ", this.expresionInicial);
 
         if (this.expresionInicial.tipo.type !== Tipos.INT) {
             if (this.expresionInicial.tipo.type !== Tipos.DOUBLE) {
@@ -58,7 +57,6 @@ export class For extends Nodo {
         //return null;
         do {
             result = this.condition.execute(newtable, tree);
-            console.log("Condiciona For ", result, this.condition.tipo);
             if (result instanceof Exception) {
                 return result;
             }
@@ -71,7 +69,6 @@ export class For extends Nodo {
             }
             if (result) {
                 result = this.expresionAumento.execute(newtable, tree);
-                console.log("expresion aumento", result);
                 if (result instanceof Exception) {
                     return result;
                 }

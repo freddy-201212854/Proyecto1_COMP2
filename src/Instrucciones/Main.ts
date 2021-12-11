@@ -29,13 +29,11 @@ export class Main extends Nodo {
             return error;
         }
         this.expression.forEach(element => {
-            console.log("Expresion: " + element.tipo);
             if (element instanceof Exception) {
                 tree.excepciones.push(element);
                 tree.console.push(element.toString());
             } else {
                 const value = element.execute(table, tree);
-                console.log(value);
             }
         });
         return null;

@@ -11,7 +11,7 @@ import { Simbolo } from "../Simbolos/Simbol";
 export class Asignacion extends Nodo {
     identifier: String;
     value: Nodo;
-
+    tablaPadre: Tabla;
     /**
      * @constructor Crea el nodo instruccion para la sentencia Asignacion
      * @param identifier nombre de la variable
@@ -26,6 +26,9 @@ export class Asignacion extends Nodo {
     }
 
     execute(table: Tabla, tree: Arbol) {
+        if(this.tablaPadre != null) {
+            table = this.tablaPadre;
+        }
         const result = this.value.execute(table, tree);
         if (result instanceof Exception) {
             return result;
@@ -39,8 +42,7 @@ export class Asignacion extends Nodo {
             tree.console.push(error.toString());
             return error;
         }
-        console.log("Asignacion: ", variable);
-        console.log(this.value.tipo.toString(), this.value.tipo.toString());
+
         if(variable.Tipo.type !== Tipos.DOUBLE){
             if (this.value.tipo.type != variable.Tipo.type) {
                 const error = new Exception('Semantico', `No se puede asignar la variable porque los tipos no coinciden.`, this.linea, this.columna);
@@ -53,11 +55,14 @@ export class Asignacion extends Nodo {
 
         variable.valor = result;
         this.tipo = variable.Tipo;
-        console.log("Asignacion: ", variable);
         return variable;
     }
 
     getC3D(tabla: Tabla, arbol: Arbol): String {
         return "";
+    }
+
+    setTablaDeSimbolosPadre(ts: Tabla) {
+        this.tablaPadre = ts;
     }
 }

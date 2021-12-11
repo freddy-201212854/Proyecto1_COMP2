@@ -30,38 +30,45 @@ export class Declaracion extends Nodo {
     }
 
     execute(table: Tabla, tree: Arbol) {
-        var result = this.value.execute(table, tree);
-        if (result instanceof Exception) {
-            return result;
+        if (this.value != null) {
+            var result = this.value.execute(table, tree);
+            if (result instanceof Exception) {
+                return result;
+            }
         }
         for (let i = 0; i < this.identifier.length; i++) {
             const identifier = this.identifier[i];
-            
+            const exists = table.getVariable(identifier);
+            if (exists !== null) {
+                const excepcion = new Exception('Semantico', `La variable ${identifier} ya existe.`, this.linea, this.columna);
+                tree.excepciones.push(excepcion);
+                return excepcion;
+            }
+
             if (this.tipo.type === Tipos.DOUBLE) {
                 result = parseFloat(result);
             } else if (this.tipo.type === Tipos.INT) {
                 if (this.tipo.type != this.value.tipo.type) {
-                  const error = new Exception(
-                    "Semántico",
-                    `No se puede declarar la variable porque los tipos no coinciden.`,
-                    this.linea,
-                    this.columna
-                  );
-                  tree.excepciones.push(error);
-                  tree.console.push(error.toString());
-                  return error;
+                    const error = new Exception(
+                        "Semántico",
+                        `No se puede declarar la variable porque los tipos no coinciden.`,
+                        this.linea,
+                        this.columna
+                    );
+                    tree.excepciones.push(error);
+                    tree.console.push(error.toString());
+                    return error;
                 }
             }
-            
             let simbol: Simbolo;
             simbol = new Simbolo(this.tipo, identifier, result, this.posicion);
             const res = table.setVariable(simbol);
+            
             if (res != null) {
-                console.log("el error es desde aca ",res);
                 const error = new Exception('Semantico', res, this.linea, this.columna);
                 tree.excepciones.push(error);
                 tree.console.push(error.toString());
-            }   
+            }
         }
         return null;
     }

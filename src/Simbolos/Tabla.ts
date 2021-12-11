@@ -3,7 +3,7 @@ import { SimboloFuncion } from "./SimboloFuncion";
 /**
  * @class En esta clase es donde vamos a guardar y obtener las variables y funciones
  */
-export class Tabla{
+export class Tabla {
     Previous: Tabla;
     Variables: Map<String, Simbolo>;
     //variables: Array<Simbolo>;
@@ -47,11 +47,11 @@ export class Tabla{
      * @method setVariable Almacena una variable, si ya existe arroja error
      * @param simbol Simbolo que contiene la informacion de la variable a almacenar
      */
-     setVariable(simbol: Simbolo){
+    setVariable(simbol: Simbolo) {
         let env: Tabla;
-        for(env = this; env != null; env = env.Previous){
-            for(let key of Array.from( env.Variables.keys()) ) {
-                if(key === simbol.identificador){
+        for (env = this; env != null; env = env.Previous) {
+            for (let key of Array.from(env.Variables.keys())) {
+                if (key === simbol.identificador) {
                     return `La variable ${key} ya ha sido declarada.`;
                 }
             }
@@ -60,16 +60,27 @@ export class Tabla{
         return null;
     }
 
+    setParametroInicializado(id: String) {
+        let env: Tabla;
+        for (env = this; env != null; env = env.Previous) {
+            for (let key of Array.from(env.Variables.keys())) {
+                if (key === id) {
+                    env.Variables.get(key).valor = true;
+                }
+            }
+        }
+    }
+
     /**
      * 
      * @method getVariable Obtiene una variable dentro de la tabla de simbolos
      * @param identifier Nombre de la variable a obtener
      */
-     getVariable(identifier: String): Simbolo{
+    getVariable(identifier: String): Simbolo {
         let env: Tabla;
-        for(env = this; env != null; env = env.Previous){
-            for(let key of Array.from( env.Variables.keys()) ) {
-                if(key === identifier){
+        for (env = this; env != null; env = env.Previous) {
+            for (let key of Array.from(env.Variables.keys())) {
+                if (key === identifier) {
                     return env.Variables.get(key);
                 }
             }
@@ -100,11 +111,26 @@ export class Tabla{
      * si se obtiene null es que no se encontro la funcion
      */
     getFuncion(identificador: String): SimboloFuncion {
+        let env: Tabla;
+        for (env = this; env != null; env = env.Previous) {
+            /*for(let key of Array.from(env.funciones.keys()) ) {
+                if(key === identificador){
+                    return env.Variables.get(key);
+                }
+            }*/
+            for (let i of env.funciones) {
+                if (i.identificador === identificador) {
+                    return i;
+                }
+            }
+        }
+
+        /*console.log("las funciones son: ", this.funciones);
         for (let i of this.funciones) {
             if (i.identificador === identificador) {
                 return i;
             }
-        }
+        }*/
         return null;
     }
 

@@ -29,7 +29,6 @@ export class While extends Nodo {
         let result: Nodo;
         do {
             result = this.condition.execute(newtable, tree);
-            console.log("resultado while ",result);
             if (result instanceof Exception) {
                 return result;
             }
