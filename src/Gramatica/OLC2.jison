@@ -80,6 +80,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "case"                return 'case'
 "break"               return 'break'
 "continue"            return 'continue'
+"default"             return 'default'
 "while"               return 'while'
 "do"                  return 'do'
 "for"                 return 'for'
@@ -186,7 +187,7 @@ CASOS : CASOS CASOS_EV { $$.push($2);}
       ;       
 
 CASOS_EV: 'case' EXPRESION ':' BLOQUE_INSTRUCCIONES2 'break' ';' { $$ = new Casos($2, $4, this._$.first_line, this._$.first_column);}
-        | 'default' ':' BLOQUE_INSTRUCCIONES2 { $$ = new Casos(null, $4, this._$.first_line, this._$.first_column);}
+        | 'default' ':' BLOQUE_INSTRUCCIONES2 { $$ = new Casos(null, $3, this._$.first_line, this._$.first_column);}
         ;
 
 EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}

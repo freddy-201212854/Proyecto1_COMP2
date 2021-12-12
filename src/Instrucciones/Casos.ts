@@ -27,15 +27,6 @@ export class Casos extends Nodo {
   }
 
   execute(table: Tabla, tree: Arbol) {
-    /* console.log("CASOS ", this.expression);
-    console.log("CASOS INSTR ", this.List);
-
-    const newtable = new Tabla(table);
-    let result: Nodo;
-
-    result = this.expression.execute(newtable, tree);
-
-    return result;*/
     return this;
   }
 }
