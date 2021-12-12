@@ -18,6 +18,9 @@
     const { Condiciones } = require('../Instrucciones/Condiciones');
     const { Continue } = require('../Expresiones/Continue');
     const { Break} = require('../Expresiones/Break');
+    const { Casos} = require('../Instrucciones/Casos');
+    const { ListCasos} = require('../Instrucciones/ListCasos');
+    const { Switch} = require('../Instrucciones/Switch');
 
 %}
 
@@ -40,6 +43,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "/"                   return '/'
 "%"                   return '%'
 ";"                   return ';'
+":"                   return ':'
 ","                   return ','
 "-"                   return '-'
 "+"                   return '+'
@@ -72,8 +76,11 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "println"             return 'println'
 "if"                  return 'if'
 "else"                return 'else'
+"switch"              return 'switch'
+"case"                return 'case'
 "break"               return 'break'
 "continue"            return 'continue'
+"default"             return 'default'
 "while"               return 'while'
 "do"                  return 'do'
 "for"                 return 'for'
@@ -121,6 +128,7 @@ INSTRUCCION : MAIN {$$ = $1;}
             | PRINT {$$ = $1;}
             | PRINTLN {$$ = $1;}
             | IF {$$ = $1;}
+            | SWITCH {$$ = $1;}
             | WHILE {$$ = $1;}
             | DOWHILE {$$ = $1;}
             | FOR {$$ = $1;}
@@ -171,6 +179,17 @@ IF : 'if' CONDICION BLOQUE_INSTRUCCIONES {$$ = new Condiciones($2, $3, [], _$.fi
    | 'if' CONDICION BLOQUE_INSTRUCCIONES 'else' IF {$$ = new Condiciones($2, $3, [$5], _$.first_line, _$.first_column);}
    ;
 
+SWITCH: 'switch' '(' EXPRESION ')' '{' CASOS '}' { $$ = new Switch($3, $6, this._$.first_line, this._$.first_column);}
+      ;
+
+CASOS : CASOS CASOS_EV { $$.push($2);}
+      | CASOS_EV { $$=[$1];}
+      ;       
+
+CASOS_EV: 'case' EXPRESION ':' BLOQUE_INSTRUCCIONES2 'break' ';' { $$ = new Casos($2, $4, this._$.first_line, this._$.first_column);}
+        | 'default' ':' BLOQUE_INSTRUCCIONES2 { $$ = new Casos(null, $3, this._$.first_line, this._$.first_column);}
+        ;
+
 EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}
                   | TIPO identifier VARIABLES_INICIALIZADAS {$$ = new Declaracion($1, [$2], $3, this._$.first_line, this._$.first_column);}
                   ;
@@ -185,6 +204,10 @@ CONDICION : '(' EXPRESION ')' {$$ = $2;}
 
 BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
                      | '{' '}' {$$ = [];}
+                     ;
+
+BLOQUE_INSTRUCCIONES2 : INSTRUCCIONES {$$ = $1;}
+                     | {$$ = [];}
                      ;
 
 LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
