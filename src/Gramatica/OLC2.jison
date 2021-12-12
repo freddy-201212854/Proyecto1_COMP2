@@ -18,6 +18,12 @@
     const { Arreglo } = require('../Instrucciones/Arreglo');
     const { Llamada } = require('../Instrucciones/Llamada');
     const { Funcion } = require('../Instrucciones/Funcion');
+    const { Condiciones } = require('../Instrucciones/Condiciones');
+    const { Continue } = require('../Expresiones/Continue');
+    const { Break} = require('../Expresiones/Break');
+    const { Casos} = require('../Instrucciones/Casos');
+    const { ListCasos} = require('../Instrucciones/ListCasos');
+    const { Switch} = require('../Instrucciones/Switch');
 %}
 
 %lex
@@ -37,7 +43,9 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 {stringliteral}       return 'STRING_LITERAL'
 "*"                   return '*'
 "/"                   return '/'
+"%"                   return '%'
 ";"                   return ';'
+":"                   return ':'
 ","                   return ','
 "-"                   return '-'
 "+"                   return '+'
@@ -50,6 +58,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "!="                  return '!='
 "||"                  return '||'
 "&&"                  return '&&'
+"&"                   return '&'
 "!"                   return '!'
 "="                   return '='
 "("                   return '('
@@ -58,14 +67,22 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "]"                   return ']'
 "{"                   return '{'
 "}"                   return '}'
+"pow"                 return 'pow'
+"sqrt"                return 'sqrt'
+"sin"                 return 'sin'
+"cos"                 return 'cos'
+"tan"                 return 'tan'
 "true"                return 'true'
 "false"               return 'false'
 "print"               return 'print'
 "println"             return 'println'
 "if"                  return 'if'
 "else"                return 'else'
+"switch"              return 'switch'
+"case"                return 'case'
 "break"               return 'break'
 "continue"            return 'continue'
+"default"             return 'default'
 "while"               return 'while'
 "do"                  return 'do'
 "for"                 return 'for'
@@ -92,7 +109,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 %left '==', '!='
 %left '>=', '<=', '<', '>'
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right '!'
 %left UMENOS
 
@@ -112,6 +129,8 @@ INSTRUCCION : MAIN {$$ = $1;}
             | ASIGNACION {$$ = $1;}
             | PRINT {$$ = $1;}
             | PRINTLN {$$ = $1;}
+            | IF {$$ = $1;}
+            | SWITCH {$$ = $1;}
             | WHILE {$$ = $1;}
             | DOWHILE {$$ = $1;}
             | FOR {$$ = $1;}
@@ -159,6 +178,22 @@ FOR   : 'for' '(' EXPRESSION_AUMENTO ';' EXPRESION ';' EXPRESSION_AUMENTO ')' BL
       | 'for' EXPRESION 'in' EXPRESION BLOQUE_INSTRUCCIONES
       ;
 
+IF : 'if' CONDICION BLOQUE_INSTRUCCIONES {$$ = new Condiciones($2, $3, [], _$.first_line, _$.first_column);}
+   | 'if' CONDICION BLOQUE_INSTRUCCIONES 'else' BLOQUE_INSTRUCCIONES {$$ = new Condiciones($2, $3, $5, _$.first_line, _$.first_column);}
+   | 'if' CONDICION BLOQUE_INSTRUCCIONES 'else' IF {$$ = new Condiciones($2, $3, [$5], _$.first_line, _$.first_column);}
+   ;
+
+SWITCH: 'switch' '(' EXPRESION ')' '{' CASOS '}' { $$ = new Switch($3, $6, this._$.first_line, this._$.first_column);}
+      ;
+
+CASOS : CASOS CASOS_EV { $$.push($2);}
+      | CASOS_EV { $$=[$1];}
+      ;       
+
+CASOS_EV: 'case' EXPRESION ':' BLOQUE_INSTRUCCIONES2 'break' ';' { $$ = new Casos($2, $4, this._$.first_line, this._$.first_column);}
+        | 'default' ':' BLOQUE_INSTRUCCIONES2 { $$ = new Casos(null, $3, this._$.first_line, this._$.first_column);}
+        ;
+
 EXPRESSION_AUMENTO : VARIABLES_INICIALIZADAS {$$ = $1;}
                   | TIPO identifier VARIABLES_INICIALIZADAS {$$ = new Declaracion($1, [$2], $3, this._$.first_line, this._$.first_column);}
                   ;
@@ -173,6 +208,10 @@ CONDICION : '(' EXPRESION ')' {$$ = $2;}
 
 BLOQUE_INSTRUCCIONES : '{' INSTRUCCIONES '}' {$$ = $2;}
                      | '{' '}' {$$ = [];}
+                     ;
+
+BLOQUE_INSTRUCCIONES2 : INSTRUCCIONES {$$ = $1;}
+                     | {$$ = [];}
                      ;
 
 LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
@@ -201,25 +240,31 @@ LISTA_PARAMETROS : LISTA_PARAMETROS ',' PARAMETRO {$$ = $1; $$.push($3);}
 PARAMETRO : TIPO identifier {$$ = new Declaracion($1, [$2], new Primitivo($1, null, this._$.first_line, this._$.first_column), this._$.first_line, this._$.first_column)}
           ;
 
-EXPRESION : EXPRESION '+' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
-          | EXPRESION '-' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
-          | EXPRESION '*' EXPRESION		    {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
-          | EXPRESION '/' EXPRESION	            {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
-          
-          | EXPRESION '<' EXPRESION		    { $$ = new Relacionales($1, $3, '<', this._$.first_line, this._$.first_column); }
-          | EXPRESION '>' EXPRESION		    { $$ = new Relacionales($1, $3, '>', this._$.first_line, this._$.first_column); }
-          | EXPRESION '>' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '>=', this._$.first_line, this._$.first_column); }
-          | EXPRESION '<' '=' EXPRESION	    { $$ = new Relacionales($1, $4, '<=', this._$.first_line, this._$.first_column); }
-          | EXPRESION '==' EXPRESION	    { $$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
-          | EXPRESION '!=' EXPRESION	    { $$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
-          
-          | EXPRESION '||' EXPRESION	    { $$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
-          | EXPRESION '&&' EXPRESION	    { $$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
+EXPRESION : EXPRESION '+' EXPRESION		            {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
+          | EXPRESION '-' EXPRESION		            {$$ = new OperAritmeticas($1, $3, '-', this._$.first_line,this._$.first_column);}
+          | EXPRESION '*' EXPRESION		            {$$ = new OperAritmeticas($1, $3, '*', this._$.first_line,this._$.first_column);}
+          | EXPRESION '/' EXPRESION	                  {$$ = new OperAritmeticas($1, $3, '/', this._$.first_line,this._$.first_column);}
+          | EXPRESION '%' EXPRESION	                  {$$ = new OperAritmeticas($1, $3, '%', this._$.first_line,this._$.first_column);}
+          | 'pow' '(' EXPRESION ',' EXPRESION ')'	{$$ = new OperAritmeticas($3, $5, 'pow', this._$.first_line,this._$.first_column);}
+          | 'sqrt' '(' EXPRESION ')'	            {$$ = new OperAritmeticas($3,null, 'sqrt', this._$.first_line,this._$.first_column);}
+          | 'sin' '(' EXPRESION ')'	                  {$$ = new OperAritmeticas($3,null, 'sin', this._$.first_line,this._$.first_column);}
+          | 'cos' '(' EXPRESION ')'	                  {$$ = new OperAritmeticas($3,null, 'cos', this._$.first_line,this._$.first_column);}
+          | 'tan' '(' EXPRESION ')'	                  {$$ = new OperAritmeticas($3,null, 'tan', this._$.first_line,this._$.first_column);}
+          | EXPRESION '<' EXPRESION		            {$$ = new Relacionales($1, $3, '<', this._$.first_line, this._$.first_column); }
+          | EXPRESION '>' EXPRESION		            {$$ = new Relacionales($1, $3, '>', this._$.first_line, this._$.first_column); }
+          | EXPRESION '>' '=' EXPRESION	            {$$ = new Relacionales($1, $4, '>=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '<' '=' EXPRESION	            {$$ = new Relacionales($1, $4, '<=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '==' EXPRESION	            {$$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
+          | EXPRESION '!=' EXPRESION	            {$$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
+          | EXPRESION '||' EXPRESION	            {$$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
+          | EXPRESION '&&' EXPRESION	            {$$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
+          | 'entero'				            {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
+          | 'decimal'				            {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
+          | identifier			                  {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
+          | STRING_LITERAL                            {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
+          | 'true'				            {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 1, this._$.first_line, this._$.first_column); }
+          | 'false'	     				      {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 0, this._$.first_line, this._$.first_column); }
           | ARREGLO				    { $$ = $1; } 
           | LLAMADA				    { $$ = $1; } 
-          | 'entero'				    {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
-          | 'decimal'				    {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
-          | identifier			            {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
-          | STRING_LITERAL			    {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
-          | '(' EXPRESION ')'                   {$$=$2;}
+          | '(' EXPRESION ')'                         {$$=$2;}
           ;
