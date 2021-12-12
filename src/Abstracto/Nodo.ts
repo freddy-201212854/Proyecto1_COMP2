@@ -12,7 +12,15 @@ export abstract class Nodo {
      * si fuera instruccion devuelve nulo y si fuera expresion devuelve un valor
      */
     abstract execute(table: Tabla, tree: Arbol): any;
- 
+    
+    /**
+     * @abstract Sirve para generar codigo en direcciones dependiendo de la instruccion o expresion 
+     * @param {Tabla} tabla Tabla de simbolos global
+     * @param {Arbol} arbol Arbol que contiene las instrucciones y excepciones
+     * @param arbol 
+     */
+     abstract getC3D(tabla: Tabla, arbol: Arbol): String;
+     
     /**
      * 
      * @constructor Base para cualquier instruccion o expresion, omitir tipo si fuera una instruccion

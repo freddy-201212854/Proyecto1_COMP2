@@ -30,4 +30,8 @@ export class Primitivo extends Nodo{
     execute(table: Tabla, tree: Arbol) {
         return this.value;
     }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
+    }
 }

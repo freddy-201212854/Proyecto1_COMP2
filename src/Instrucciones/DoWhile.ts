@@ -37,7 +37,6 @@ export class DoWhile extends Nodo {
                 if (result instanceof Exception) {
                     return result;
                 }
-                console.log("condicional es ", result);
 
                 if (this.condition.tipo.type !== Tipos.BOOLEAN) {
                     const error = new Exception('Semantico', `Se esperaba una expresion booleana para la condicion`, this.linea, this.columna);
@@ -53,5 +52,9 @@ export class DoWhile extends Nodo {
             } while (result);
         }
         return null;
+    }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
     }
 }

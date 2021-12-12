@@ -1,8 +1,12 @@
 import express from "express";
+import { Funcion } from "./Instrucciones/Funcion";
 import { Declaracion } from "./Instrucciones/Declaracion";
 import { Main } from "./Instrucciones/Main";
 import { Tabla } from "./Simbolos/Tabla";
 import { Exception } from "./Utilidades/Exception";
+import { Llamada } from "./Instrucciones/Llamada";
+import { Arbol } from "./Simbolos/Arbol";
+import { agregarFuncion } from "./Utilidades/common";
 
 const parser = require("./Gramatica/OLC2.js");
 const cors = require("cors");
@@ -31,11 +35,13 @@ app.post("/ejecutar", (req, res) => {
     return res.redirect("/");
   }
 
-  const arbolAST = parser.parse(codigo_fuente);
-  
+  const arbolAST: Arbol = parser.parse(codigo_fuente);
+
   const tabla = new Tabla(null);
-  arbolAST.instrucciones.forEach((m: any) => {
-    if (!(m instanceof Main || m instanceof Declaracion)) {
+  //arbolAST.execute(tabla, arbolAST);
+
+  /*arbolAST.instrucciones.forEach((m: any) => {
+    if (!(m instanceof Main || m instanceof Declaracion || m instanceof Funcion || m instanceof Llamada)) {
       console.log(m);
       const error = new Exception('Semantico', 'Sentencia no valida, sentencia fuera del main', m.linea, m.columna);
       arbolAST.excepciones.push(error);
@@ -43,9 +49,30 @@ app.post("/ejecutar", (req, res) => {
     } else {
       const res = m.execute(tabla, arbolAST);
     }
+  });*/
+
+  arbolAST.instrucciones.map(m => {
+    if (m instanceof Funcion) {
+      tabla.setStack(0);
+      agregarFuncion(tabla, arbolAST, m);
+    }
   });
 
-  console.log("lo quer viene en consola es ",arbolAST.console);
+  let cantidadGlobales = 0;
+  arbolAST.instrucciones.map(m => {
+    if (m instanceof Declaracion) {
+      m.posicion = tabla.getHeap();
+      cantidadGlobales++;
+    }
+  });
+
+  arbolAST.instrucciones.map(m => {
+    if (!(m instanceof Funcion)) {
+      m.execute(tabla, arbolAST);
+    }
+  });
+
+  console.log("lo quer viene en consola es ", arbolAST.console);
   res.render('views/index', {
     codigo_fuente,
     consola: arbolAST.console,

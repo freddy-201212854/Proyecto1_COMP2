@@ -186,4 +186,8 @@ export class Relacionales extends Nodo {
       return error;
     }
   }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    return "";
+  }
 }

@@ -38,4 +38,8 @@ export class Identificador extends Nodo {
         this.tipo = variable.Tipo;
         return variable.valor;
     }
+
+    getC3D(tabla: Tabla, arbol: Arbol): String {
+        return "";
+    }
 }
