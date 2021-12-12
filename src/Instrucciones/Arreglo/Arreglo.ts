@@ -1,8 +1,8 @@
-import { Nodo } from "../Abstracto/Nodo";
-import { Arbol } from "../Simbolos/Arbol";
-import { Tabla } from "../Simbolos/Tabla";
-import { Exception } from "../Utilidades/Exception";
-import { Tipo, Tipos } from "../Utilidades/Tipo";
+import { Nodo } from "../../Abstracto/Nodo";
+import { Arbol } from "../../Simbolos/Arbol";
+import { Tabla } from "../../Simbolos/Tabla";
+import { Exception } from "../../Utilidades/Exception";
+import { Tipo, Tipos } from "../../Utilidades/Tipo";
 
 export class Arreglo extends Nodo {
     tipo: Tipo;
