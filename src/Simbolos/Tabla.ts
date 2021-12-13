@@ -60,6 +60,25 @@ export class Tabla {
         return null;
     }
 
+    /**
+     * 
+     * @method setVariable Almacena una variable, si ya existe arroja error
+     * @param simbol Simbolo que contiene la informacion de la variable a almacenar
+     */
+     ActualizarVariable(simbol: Simbolo) {
+        let env: Tabla;
+        for (env = this; env != null; env = env.Previous) {
+            for (let key of Array.from(env.Variables.keys())) {
+                if (key === simbol.identificador) {
+                    this.Variables.set(simbol.identificador, simbol);
+                    return null;
+                }
+            }
+        }
+        
+        return "Error al actualizar la asignacion de la variable";
+    }
+
     setParametroInicializado(id: String) {
         let env: Tabla;
         for (env = this; env != null; env = env.Previous) {
