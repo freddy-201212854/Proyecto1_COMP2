@@ -5,8 +5,9 @@
     "main": "index.js",
     "scripts": {
         "ts:node": "ts-node src/",
-        "build": "rimraf ./build && tsc && cpx \"./src/views/**\" ./build/views &&  cpx \"./src/public/**\" ./build/public",
+        "build": "rimraf ./build && tsc && cpx \"./src/views/**\" ./build/views &&  cpx \"./src/public/**\" ./build/public && cpx \"./src/index.html\" ./build/",
         "dev": "nodemon",
+        "bundle": "browserify ./build/index.js -o ./build/bundle.js",
         "start": "npm run build && node build/index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },

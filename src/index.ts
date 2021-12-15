@@ -1,41 +1,31 @@
-import express from "express";
-import { Funcion } from "./Instrucciones/Funcion";
+//import { Funcion } from "./Instrucciones/Funcion";
 import { Declaracion } from "./Instrucciones/Declaracion";
 import { Main } from "./Instrucciones/Main";
 import { Tabla } from "./Simbolos/Tabla";
 import { Exception } from "./Utilidades/Exception";
-import { Llamada } from "./Instrucciones/Llamada";
+//import { Llamada } from "./Instrucciones/Llamada";
 import { Arbol } from "./Simbolos/Arbol";
-import { agregarFuncion } from "./Utilidades/common";
+//import { agregarFuncion } from "./Utilidades/common";
+
+const compile = document.querySelector("#ejecutar");
+const codigo = <HTMLInputElement>document.querySelector("#codigo_fuente");
+const consola = document.querySelector("#consola");
 
 const parser = require("./Gramatica/OLC2.js");
-const cors = require("cors");
-const app = express();
-const port = 3000;
-app.use(cors());
 
-app.use(express.static(__dirname + "/public"));
-app.set("view engine", "ejs");
+var editorSelector = "#codigo_fuente";
 
-app.set("views", __dirname);
-app.use(express.urlencoded());
-app.use(express.json());
+compile?.addEventListener("click", () => {
+  console.log(
+    "Editor",
+    getCodeMirrorNative(editorSelector).getDoc().getValue()
+  );
+  //parser.parse("void main() { print(5); }");
+  document.getElementById("consola").innerHTML = "";
 
-app.get("/", (req, res) => {
-  res.render("views/index", {
-    codigo_fuente: "",
-    consola: [],
-    errores: [],
-  });
-});
-
-app.post("/ejecutar", (req, res) => {
-  const { codigo_fuente, consola } = req.body;
-  if (!codigo_fuente) {
-    return res.redirect("/");
-  }
-
-  const arbolAST: Arbol = parser.parse(codigo_fuente);
+  const arbolAST: Arbol = parser.parse(
+    getCodeMirrorNative(editorSelector).getDoc().getValue()
+  );
 
   const tabla = new Tabla(null);
   //arbolAST.execute(tabla, arbolAST);
@@ -51,35 +41,54 @@ app.post("/ejecutar", (req, res) => {
     }
   });*/
 
-  arbolAST.instrucciones.map(m => {
+  /*arbolAST.instrucciones.map(m => {
     if (m instanceof Funcion) {
       tabla.setStack(0);
       agregarFuncion(tabla, arbolAST, m);
     }
   });
-
   let cantidadGlobales = 0;
   arbolAST.instrucciones.map(m => {
     if (m instanceof Declaracion) {
       m.posicion = tabla.getHeap();
       cantidadGlobales++;
     }
+  });*/
+
+  arbolAST.instrucciones.map((m) => {
+    // if (!(m instanceof Funcion)) {
+    m.execute(tabla, arbolAST);
+    // }
   });
 
-  arbolAST.instrucciones.map(m => {
-    if (!(m instanceof Funcion)) {
-      m.execute(tabla, arbolAST);
-    }
-  });
-
-  console.log("lo quer viene en consola es ", arbolAST.console);
-  res.render('views/index', {
-    codigo_fuente,
-    consola: arbolAST.console,
-    errores: arbolAST.excepciones
-  });
+  console.log(arbolAST);
+  consola.append(arbolAST.console.join(" "));
+  /*let source = my_source.value;
+	const result = analize_source(source);
+	console.log(result);
+	const globalScope: Scope = new Scope(null);
+	const ast: AST = new AST(result);
+	result.forEach((res: Instruction) => {
+		res.translate(globalScope, ast);
+	});*/
 });
 
-app.listen(port, () => {
-  return console.log(`server is listening on ${port}`);
-});
+function getCodeMirrorNative(target: any) {
+  var _target = target;
+  if (typeof _target === "string") {
+    _target = document.querySelector(_target);
+  }
+  if (_target === null || !_target.tagName === undefined) {
+    throw new Error("Element does not reference a CodeMirror instance.");
+  }
+
+  if (_target.className.indexOf("CodeMirror") > -1) {
+    return _target.CodeMirror;
+  }
+
+  if (_target.tagName === "TEXTAREA") {
+    return _target.nextSibling.CodeMirror;
+  }
+
+  return null;
+}
