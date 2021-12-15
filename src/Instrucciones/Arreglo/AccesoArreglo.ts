@@ -8,16 +8,14 @@ import { Asignacion } from "../Asignacion";
 import { Declaracion } from "../Declaracion";
 import { NodoArreglo } from "./NodoArreglo";
 
-export class AccesoArreglo implements Nodo {
+export class AccesoArreglo extends Nodo {
     indices: Array<Nodo>;
     identifier: String;
-    tipo: Tipo;
-    linea: Number;
-    columna: Number;
 
-    constructor(a: String, b: Array<Nodo>, linea: Number, columna: Number) {
-        this.indices = b;
-        this.identifier = a;
+    constructor(identifier: String, expresiones: Array<Nodo>, linea: Number, columna: Number) {
+        super(new Tipo(Tipos.ARRAY), linea, columna);
+        this.indices = expresiones;
+        this.identifier = identifier;
     }
     
 
@@ -34,9 +32,9 @@ export class AccesoArreglo implements Nodo {
         });
         //var simbol = new Simbolo(this.tipo, this.identifier, valoresIndices, 0);
         //const res = tabla.setVariable(simbol);
-        var valores = tabla.getVariable(this.identifier) as Simbolo;
-        var nodo = valores.valor as NodoArreglo;
-        console.log("valores del arreglo ", valores);
+        //var valores = tabla.getVariable(this.identifier) as Simbolo;
+        //var nodo = valores.valor as NodoArreglo;
+        console.log("Acceso a arreglo", tabla.getVariableArreglo(this.identifier, valoresIndices));
         return null;
     }
 

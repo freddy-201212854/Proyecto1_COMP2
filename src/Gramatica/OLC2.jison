@@ -106,6 +106,8 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "toLowercase"         return 'toLowercase'
 "caracterOfPosition"  return 'caracterOfPosition'
 {identifier}          return 'identifier'
+"begin"               return 'begin'
+"end"                 return 'end'
 
 <<EOF>>                 return 'EOF';
 
@@ -229,11 +231,6 @@ LISTA_EXPRESIONES : LISTA_EXPRESIONES ',' EXPRESION      {$$.push($3);}
             | EXPRESION                                  {$$ = [$1];}
             ;
 
-DIMENSIONES : DIMENSIONES '[' EXPRESION ']' {$$ = $1; $$.push($3);}
-            | '[' EXPRESION ']' {$$ = [$2];}
-            | '[' ']' {$$ = [];}
-            ;
-
 LLAMADA : identifier '(' LISTA_EXPRESIONES ')' ';' {$$ = new Llamada($1, $3, this._$.first_line, this._$.first_column);}
         | identifier '(' ')' ';' {$$ = new Llamada($1, [], this._$.first_line, this._$.first_column);} 
         ;
@@ -249,13 +246,18 @@ LISTA_PARAMETROS : LISTA_PARAMETROS ',' PARAMETRO {$$ = $1; $$.push($3);}
 PARAMETRO : TIPO identifier {$$ = new Declaracion($1, [$2], new Primitivo($1, null, this._$.first_line, this._$.first_column), this._$.first_line, this._$.first_column)}
           ;
 
+DIMENSIONES : DIMENSIONES '[' EXPRESION ']' {$$ = $1; $$.push($3);}
+            | '[' EXPRESION ']' {$$ = [$2];}
+            | '[' ']' {$$ = [];}
+            ;
+
+DECLARACION_ARREGLO : TIPO '[' ']' identifier  ';' {$$ = new DeclaracionArreglo($1, $4, [], this._$.first_line, this._$.first_column);}
+                    | TIPO '[' ']' identifier  '=' '[' LISTA_EXPRESIONES ']' ';' {$$ = new DeclaracionArreglo($1, $4, $7, this._$.first_line, this._$.first_column);}
+                    ;
 
 ASIGNACION_ARREGLO : identifier DIMENSIONES '=' '[' LISTA_EXPRESIONES ']' ';' {$$ =new AsignacionArreglo($1, $2, $5, this._$.first_line, this._$.first_column);}
                    | identifier DIMENSIONES '=' '[' ']' ';' {$$ =new AsignacionArreglo($1, $2, [], this._$.first_line, this._$.first_column);}
                    ;
-
-DECLARACION_ARREGLO : TIPO identifier DIMENSIONES ';' {$$ = new DeclaracionArreglo($1, $2, $3, this._$.first_line, this._$.first_column);}
-                    ;
 
 EXPRESION : '-' EXPRESION %prec UMENOS	                                { $$ = new OperAritmeticas($2, undefined, '-', this._$.first_line, this._$.first_column); } 
           | EXPRESION '+' EXPRESION		                        {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
@@ -287,6 +289,9 @@ EXPRESION : '-' EXPRESION %prec UMENOS	                                { $$ = ne
           | STRING_LITERAL                                              {$$ = new Primitivo(new Tipo(Tipos.STRING), $1.replace(/\"/g,""), this._$.first_line,this._$.first_column); }
           | 'true'				                        {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 1, this._$.first_line, this._$.first_column); }
           | 'false'	     				                {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 0, this._$.first_line, this._$.first_column); }
+          | 'begin'	     				                {$$ = new Primitivo(new Tipo(Tipos.BEGIN), 0, this._$.first_line, this._$.first_column); }
+          | 'end'	     				                {$$ = new Primitivo(new Tipo(Tipos.END), 0, this._$.first_line, this._$.first_column); }
           | LLAMADA				                        { $$ = $1; } 
+          | identifier DIMENSIONES                                      {$$ = new AccesoArreglo($1, $2, this._$.first_line, this._$.first_column ) }
           | '(' EXPRESION ')'                                           {$$=$2;}
           ;

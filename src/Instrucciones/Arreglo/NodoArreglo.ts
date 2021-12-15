@@ -4,10 +4,10 @@ import { Tipo } from "../../Utilidades/Tipo";
 import { Tipos } from "../../Utilidades/Tipo";
 
 export class NodoArreglo {
-    tipo: Tipo;
+    tipo: Tipo | null;
     linea: Number;
     columna: Number;
-    valor: Object;
+    valor: Object | null;
     celdasVecinas: Array<NodoArreglo>;
 
     /**
@@ -20,6 +20,9 @@ export class NodoArreglo {
     constructor() {
         this.celdasVecinas = [];
         this.valor = null; //Inicializando cada celda con objeto nulo
+        this.tipo = null;
+        this.linea = 0;
+        this.columna = 0;
     }
 
     inicializarNodo(cantDimensiones: number, dimensionActual: number, tamaniosDimensiones: Array<number>) {
@@ -28,7 +31,8 @@ export class NodoArreglo {
         }
         for (let i = 0; i < tamaniosDimensiones[dimensionActual - 1]; i++) {
             var arreglo: NodoArreglo = new NodoArreglo();
-            arreglo.setTipo(this.tipo);
+            var tipo = this.tipo as Tipo;
+            arreglo.setTipo(tipo);
             this.celdasVecinas.push(arreglo);
             arreglo.inicializarNodo(cantDimensiones, dimensionActual + 1, tamaniosDimensiones);
         }
@@ -39,10 +43,11 @@ export class NodoArreglo {
         if (valIndiceActual < this.celdasVecinas.length && valIndiceActual >= 0) {
             var arr: NodoArreglo = this.celdasVecinas[valIndiceActual];
             if (indiceActual == cantIndices) {
-                if (this.tipo.type != Tipos.INT) {
-                    if (this.tipo.type != Tipos.BOOLEAN) {
-                        if (this.tipo.type != Tipos.STRING) {
-                            console.log("Esta intentando insertar un valor de tipo " + val.toString() + " al arreglo de tipo " + this.tipo);
+                var tipo = this.tipo as Tipo;
+                if (tipo.type != Tipos.INT) {
+                    if (tipo.type != Tipos.BOOLEAN) {
+                        if (tipo.type != Tipos.STRING) {
+                            console.log("Esta intentando insertar un valor de tipo " + val.toString() + " al arreglo de tipo " + tipo);
                             return;
                         }
                     }
@@ -58,12 +63,12 @@ export class NodoArreglo {
         }
     }
 
-    getValor(cantIndices: number, indiceActual: number, indices: Array<number>, id: String): Object {
+    getValor(cantIndices: number, indiceActual: number, indices: Array<number>, id: String): Object | null {
         var valIndiceActual: number = indices[indiceActual - 1];
         if (valIndiceActual < this.celdasVecinas.length && valIndiceActual >= 0) {
             var arr: NodoArreglo = this.celdasVecinas[valIndiceActual];
             if (indiceActual == cantIndices) {
-                var val: Object = arr.valor;
+                var val: Object | null = arr.valor;
                 return val == null ? null : val;
             } else {
                 return arr.getValor(cantIndices, indiceActual + 1, indices, id);
@@ -81,7 +86,7 @@ export class NodoArreglo {
     }
 
     getTipo(): Tipo {
-        return this.tipo;
+        return this.tipo as Tipo;
     }
 
     getCeldasVecinas(): Array<NodoArreglo> {

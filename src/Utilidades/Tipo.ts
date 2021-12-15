@@ -6,7 +6,10 @@ export enum Tipos {
     CHAR,
     DOUBLE,
     NULL,
-    INT
+    INT,
+    BEGIN,
+    END,
+    ARRAY
 }
 
 /**
@@ -44,6 +47,10 @@ export class Tipo{
             return 'null';
         }else if(this.type === Tipos.VOID){
             return 'void';
+        }else if(this.type === Tipos.BEGIN){
+            return 'begin';
+        }else if(this.type === Tipos.END){
+            return 'end';
         }
     }
 }

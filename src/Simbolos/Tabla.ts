@@ -84,7 +84,8 @@ export class Tabla {
         for (env = this; env != null; env = env.Previous) {
             for (let key of Array.from(env.Variables.keys())) {
                 if (key === id) {
-                    env.Variables.get(key).valor = true;
+                    let simbolo = env.Variables.get(key) as Simbolo;
+                    simbolo.valor = true;
                 }
             }
         }
@@ -95,7 +96,7 @@ export class Tabla {
      * @method getVariable Obtiene una variable dentro de la tabla de simbolos
      * @param identifier Nombre de la variable a obtener
      */
-    getVariable(identifier: String): Simbolo {
+    getVariable(identifier: String): Simbolo | null | undefined {
         let env: Tabla;
         for (env = this; env != null; env = env.Previous) {
             for (let key of Array.from(env.Variables.keys())) {
@@ -108,12 +109,31 @@ export class Tabla {
     }
 
     /**
+     * 
+     * @method getVariable Obtiene una variable dentro de la tabla de simbolos
+     * @param identifier Nombre de la variable a obtener
+     */
+     getVariableArreglo(identifier: String, indices: Array<number>): Object | undefined | null {
+        let env: Tabla;
+        for (env = this; env != null; env = env.Previous) {
+            for (let key of Array.from(env.Variables.keys())) {
+                if (key === identifier) {
+                    let simbolo = env.Variables.get(key) as Simbolo;
+                    console.log("Simbolo en tabla ",simbolo);
+                    return simbolo.getValor(identifier, indices);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @function setFuncion Almacena un nuevo simbolo en la tabla de funciones
      * @param {SimboloFuncion} simbolo Simbolo que se va almacenar
      * @return {String} Si la funcion ya existe retorna un string con un mensaje de error 
      * caso contrario retorna null que significa que la funcion se ha insertado
      */
-    setFuncion(simbolo: SimboloFuncion): String {
+    setFuncion(simbolo: SimboloFuncion): String | null {
         for (let i of this.funciones) {
             if (i.identificador === simbolo.identificador) {
                 return `La funcion ${simbolo.identificador} ya existe.`
@@ -129,7 +149,7 @@ export class Tabla {
      * @return {SimboloFuncion} Retorna el simbolo con la información de la funcion, 
      * si se obtiene null es que no se encontro la funcion
      */
-    getFuncion(identificador: String): SimboloFuncion {
+    getFuncion(identificador: String): SimboloFuncion | null {
         let env: Tabla;
         for (env = this; env != null; env = env.Previous) {
             /*for(let key of Array.from(env.funciones.keys()) ) {

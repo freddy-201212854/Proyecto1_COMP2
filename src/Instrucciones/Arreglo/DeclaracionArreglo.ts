@@ -9,14 +9,17 @@ import { Declaracion } from "../Declaracion";
 export class DeclaracionArreglo extends Declaracion implements Nodo {
     dimensiones: Array<Nodo>;
 
-    constructor(a: Tipo, b: String, c: Array<Nodo>, linea: Number, columna: Number) {
-        super(a, b, null, linea, columna);
-        this.dimensiones = c;
-        console.log("Declaracion arreglo ", a, b, this.dimensiones);
+    constructor(tipo: Tipo, identifier: String, expresiones: Array<Nodo>, linea: Number, columna: Number) {
+        super(tipo, identifier, null, linea, columna);
+        this.dimensiones = expresiones;
+        console.log("Declaracion arreglo ", tipo, identifier, this.dimensiones);
     }
 
     // integer[] a = new integer[5*4+7]
     execute(tabla: Tabla, arbol: Arbol): any {
+        if (this.dimensiones.length == 0) {
+            return null;
+        }
         var tamaniosDimensiones: Array<number> = [];
         const exists = tabla.getVariable(this.identifier);
         if (exists !== null) {

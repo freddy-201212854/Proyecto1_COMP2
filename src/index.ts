@@ -5,6 +5,8 @@ import { Tabla } from "./Simbolos/Tabla";
 import { Exception } from "./Utilidades/Exception";
 //import { Llamada } from "./Instrucciones/Llamada";
 import { Arbol } from "./Simbolos/Arbol";
+import { Funcion } from "./Instrucciones/Funcion";
+import { agregarFuncion } from "./Utilidades/common";
 //import { agregarFuncion } from "./Utilidades/common";
 
 const compile = document.querySelector("#ejecutar");
@@ -41,7 +43,7 @@ compile?.addEventListener("click", () => {
     }
   });*/
 
-  /*arbolAST.instrucciones.map(m => {
+  arbolAST.instrucciones.map(m => {
     if (m instanceof Funcion) {
       tabla.setStack(0);
       agregarFuncion(tabla, arbolAST, m);
@@ -53,24 +55,16 @@ compile?.addEventListener("click", () => {
       m.posicion = tabla.getHeap();
       cantidadGlobales++;
     }
-  });*/
+  });
 
   arbolAST.instrucciones.map((m) => {
-    // if (!(m instanceof Funcion)) {
-    m.execute(tabla, arbolAST);
-    // }
+    if (!(m instanceof Funcion)) {
+      m.execute(tabla, arbolAST);
+    }
   });
 
   console.log(arbolAST);
   consola.append(arbolAST.console.join(" "));
-  /*let source = my_source.value;
-	const result = analize_source(source);
-	console.log(result);
-	const globalScope: Scope = new Scope(null);
-	const ast: AST = new AST(result);
-	result.forEach((res: Instruction) => {
-		res.translate(globalScope, ast);
-	});*/
 });
 
 function getCodeMirrorNative(target: any) {
