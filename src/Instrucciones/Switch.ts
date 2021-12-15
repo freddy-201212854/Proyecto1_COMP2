@@ -81,4 +81,8 @@ export class Switch extends Nodo {
     }
     return this;
   }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    throw new Error("Method not implemented.");
+  }
 }

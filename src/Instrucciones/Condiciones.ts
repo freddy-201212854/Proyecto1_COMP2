@@ -73,4 +73,8 @@ export class Condiciones extends Nodo {
 
     return null;
   }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    throw new Error("Method not implemented.");
+  }
 }

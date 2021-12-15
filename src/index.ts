@@ -47,7 +47,6 @@ compile?.addEventListener("click", () => {
       agregarFuncion(tabla, arbolAST, m);
     }
   });
-
   let cantidadGlobales = 0;
   arbolAST.instrucciones.map(m => {
     if (m instanceof Declaracion) {

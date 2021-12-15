@@ -42,14 +42,11 @@ export class Relacionales extends Nodo {
 
     if (this.operador === "<") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult < RightResult;
       } else {
@@ -65,14 +62,11 @@ export class Relacionales extends Nodo {
       }
     } else if (this.operador === ">") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult > RightResult;
       } else {
@@ -88,14 +82,11 @@ export class Relacionales extends Nodo {
       }
     } else if (this.operador === ">=") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult >= RightResult;
       } else {
@@ -114,7 +105,8 @@ export class Relacionales extends Nodo {
         (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
         (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
         (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult <= RightResult;
       } else {
@@ -130,25 +122,19 @@ export class Relacionales extends Nodo {
       }
     } else if (this.operador === "!=") {
       if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult != RightResult;
       } else if (
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.INT) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.INT &&
-          this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE &&
-          this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN && this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult != RightResult;
       } else {
@@ -167,7 +153,9 @@ export class Relacionales extends Nodo {
         (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.INT) ||
         (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.DOUBLE) ||
         (this.opIzq.tipo.type === Tipos.INT && this.opDer.tipo.type === Tipos.DOUBLE) ||
-        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT)
+        (this.opIzq.tipo.type === Tipos.DOUBLE && this.opDer.tipo.type === Tipos.INT) ||
+        (this.opIzq.tipo.type === Tipos.BOOLEAN &&
+          this.opDer.tipo.type === Tipos.BOOLEAN)
       ) {
         return LeftResult == RightResult;
       } else if (
@@ -197,5 +185,9 @@ export class Relacionales extends Nodo {
       tree.console.push(error.toString());
       return error;
     }
+  }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    return "";
   }
 }

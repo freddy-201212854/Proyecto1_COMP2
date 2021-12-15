@@ -18,4 +18,8 @@ export class Continue extends Nodo {
   execute(table: Tabla, tree: Arbol) {
     return this;
   }
+
+  getC3D(tabla: Tabla, arbol: Arbol): String {
+    throw new Error("Method not implemented.");
+  }
 }
