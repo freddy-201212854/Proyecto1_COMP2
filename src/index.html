@@ -1,0 +1,107 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>QUETZAL-OLC2</title>
+    <link rel="stylesheet" href="./public/css/codemirror.css" />
+    <link rel="stylesheet" href="./public/css/dracula.css" />
+    <link rel="stylesheet" href="./public/css/bootstrap.css" />
+    <link rel="stylesheet" href="./public/css/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>Quetzal OCL2</h1>
+    </div>
+    <div class="compilador">
+      <div class="content-interprete">
+        <h3>Interprete</h3>
+        <textarea id="codigo_fuente" name="codigo_fuente"></textarea>
+      </div>
+      <div class="content-consola">
+        <h3>Consola</h3>
+        <textarea
+          class="consola"
+          id="consola"
+          name="consola"
+          readonly
+        ></textarea>
+      </div>
+    </div>
+    <div class="menu-interprete">
+      <div class="btn btn-ejecutar" id="ejecutar">
+        <i class="fas fa-play"></i>
+        <span>Ejecutar</span>
+      </div>
+      <div class="btn btn-reporte-ast">
+        <i class="fas fa-project-diagram"></i>
+        <span>AST</span>
+      </div>
+      <div class="btn btn-tabla-simbolos">
+        <i class="fas fa-table"></i>
+        <span>Tabla de simbolos</span>
+      </div>
+      <div class="btn btn-tabla-errores">
+        <i class="fas fa-table"></i>
+        <span>Tabla de errores</span>
+      </div>
+      <div class="btn btn-reporte-gramatical">
+        <i class="fas fa-project-diagram"></i>
+        <span>Reporte Gramatical</span>
+      </div>
+    </div>
+    <input type="text" name="nombre" id="nombre" class="nombre" value="" />
+
+    <script src="./public/js/codemirror.js"></script>
+    <script src="./public/js/Jquery.js"></script>
+    <script src="./public/js/bootstrap.js"></script>
+    <script src="./public/Mode/javascript/javascript.js"></script>
+    <script src="./public/jquery-3.5.1.js"></script>
+
+    <!-- <script src="./Abstracto/Nodo.js"></script> -->
+    <!-- <script src="./Utilidades/Exception.js"></script>
+    <script src="./Utilidades/Tipo.js"></script>
+    <script src="./Simbolos/Arbol.js"></script>
+    <script src="./Instrucciones/Declaracion.js"></script>
+    <script src="./Instrucciones/Asignacion.js"></script>
+    <script src="./Expresiones/Identificador.js"></script>
+    <script src="./Instrucciones/Println.js"></script>
+    <script src="./Expresiones/OperAritmeticas.js"></script>
+    <script src="./Expresiones/Relacionales.js"></script>
+    <script src="./Expresiones/Logicas.js"></script>
+    <script src="./Instrucciones/DoWhile.js"></script>
+    <script src="./Instrucciones/For.js"></script>
+    <script src="./Instrucciones/Condiciones.js"></script>
+    <script src="./Expresiones/Continue.js"></script>
+    <script src="./Expresiones/Break.js"></script>
+    <script src="./Instrucciones/Casos.js"></script>
+    <script src="./Instrucciones/ListCasos.js"></script>
+    <script src="./Instrucciones/Switch.js"></script> -->
+
+    <script src="./bundle.js"></script>
+    <script>
+      $(document).ready(function () {
+        const editor = CodeMirror.fromTextArea(codigo_fuente, {
+          lineNumbers: true,
+          mode: "javascript",
+          theme: "dracula",
+        });
+        editor.setSize("100%", "100%");
+
+        /* $("#ejecutar").click(function () {
+          console.log(editor.getValue());
+          ejecutar();
+          //parse(editor.getValue());
+        });*/
+      });
+    </script>
+  </body>
+</html>
