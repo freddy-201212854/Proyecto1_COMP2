@@ -27,6 +27,7 @@
     const { AsignacionArreglo } = require('../Instrucciones/Arreglo/AsignacionArreglo');
     const { DeclaracionArreglo } = require('../Instrucciones/Arreglo/DeclaracionArreglo');
     const { AccesoArreglo } = require('../Instrucciones/Arreglo/AccesoArreglo');
+    const { Nativas } = require('../Expresiones/Nativas');
 %}
 
 %lex
@@ -53,6 +54,7 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "-"                   return '-'
 "+"                   return '+'
 "*"                   return '*'
+"^"                   return '^'
 "<"                   return '<'
 ">"                   return '>'
 "<="                  return '<='
@@ -95,12 +97,16 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 "string"              return 'string'
 "boolean"             return 'boolean'
 "int"                 return 'int'
+"toInt"               return 'toInt'
+"toDouble"            return 'toDouble'
+"typeof"              return 'typeof'
 "void"                return 'void'
 "null"                return 'null'
 "double"              return 'double'
 "char"                return 'char'
 "."                   return '.'
 "subString"           return 'subString'
+"parse"                return 'parse'
 "length"              return 'length'
 "toUppercase"         return 'toUppercase'
 "toLowercase"         return 'toLowercase'
@@ -256,6 +262,7 @@ ASIGNACION_ARREGLO : identifier DIMENSIONES '=' '[' LISTA_EXPRESIONES ']' ';' {$
 
 DECLARACION_ARREGLO : TIPO identifier DIMENSIONES ';' {$$ = new DeclaracionArreglo($1, $2, $3, this._$.first_line, this._$.first_column);}
                     ;
+                    
 
 EXPRESION : '-' EXPRESION %prec UMENOS	                                { $$ = new OperAritmeticas($2, undefined, '-', this._$.first_line, this._$.first_column); } 
           | EXPRESION '+' EXPRESION		                        {$$ = new OperAritmeticas($1, $3, '+', this._$.first_line, this._$.first_column);}
@@ -275,12 +282,14 @@ EXPRESION : '-' EXPRESION %prec UMENOS	                                { $$ = ne
           | EXPRESION '==' EXPRESION	                                {$$ = new Relacionales($1, $3, '==', this._$.first_line, this._$.first_column); }
           | EXPRESION '!=' EXPRESION	                                {$$ = new Relacionales($1, $3, '!=', this._$.first_line, this._$.first_column); }
           | EXPRESION '||' EXPRESION	                                {$$ = new Logicas($1, $3, '||', this._$.first_line, _$.first_column); }
+          | EXPRESION '&' EXPRESION	                                {$$ = new OperAritmeticas($1, $3, '&', this._$.first_line, this._$.first_column); }
           | EXPRESION '&&' EXPRESION	                                {$$ = new Logicas($1, $3, '&&', this._$.first_line, this._$.first_column); }
           | EXPRESION '.' 'toLowercase' '(' ')'                         {$$ = new Cadena('toLowercase', $1, null, null, this._$.first_line, this._$.first_column);}  
           | EXPRESION '.' 'toUppercase' '(' ')'                         {$$ = new Cadena('toUppercase', $1, null, null, this._$.first_line, this._$.first_column);} 
           | EXPRESION '.' 'length' '(' ')'                              {$$ = new Cadena('length', $1, null, null, this._$.first_line, this._$.first_column);}
           | EXPRESION '.' 'caracterOfPosition' '(' EXPRESION ')'        {$$ = new Cadena('caracterOfPosition', $1, $5, null, this._$.first_line, this._$.first_column);}
           | EXPRESION '.' 'subString' '(' EXPRESION ',' EXPRESION ')'   {$$ = new Cadena('subString', $1, $5, $7, this._$.first_line, this._$.first_column);}
+          | STRING_LITERAL '^' 'entero'                                 {$$ = new Cadena('^', $1, $3, null, this._$.first_line, this._$.first_column);}
           | 'entero'				                        {$$ = new Primitivo(new Tipo(Tipos.INT), Number($1), this._$.first_line,this._$.first_column);}
           | 'decimal'				                        {$$ = new Primitivo(new Tipo(Tipos.DOUBLE), Number($1), this._$.first_line,this._$.first_column);}
           | identifier			                                {$$ = new Identificador($1, this._$.first_line,this._$.first_column);}
@@ -288,5 +297,15 @@ EXPRESION : '-' EXPRESION %prec UMENOS	                                { $$ = ne
           | 'true'				                        {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 1, this._$.first_line, this._$.first_column); }
           | 'false'	     				                {$$ = new Primitivo(new Tipo(Tipos.BOOLEAN), 0, this._$.first_line, this._$.first_column); }
           | LLAMADA				                        { $$ = $1; } 
+          | FUNCION_NATIVA
           | '(' EXPRESION ')'                                           {$$=$2;}
           ;
+
+FUNCION_NATIVA : 'int' '.' 'parse' '(' STRING_LITERAL ')' {$$ = new Nativas(new Tipo(Tipos.INT), $5.replace(/\"/g,""), true, this._$.first_line,this._$.first_column);}
+                |'double' '.' 'parse' '(' STRING_LITERAL ')' {$$ = new Nativas(new Tipo(Tipos.DOUBLE), $5.replace(/\"/g,""), true, this._$.first_line,this._$.first_column);}
+                |'boolean' '.' 'parse' '(' STRING_LITERAL ')' {$$ = new Nativas(new Tipo(Tipos.BOOLEAN), $5.replace(/\"/g,""), true, this._$.first_line,this._$.first_column);}
+                |'toInt' '(' EXPRESION ')' {$$ = new Nativas(new Tipo(Tipos.INT), $3, false, this._$.first_line,this._$.first_column);}
+                |'toDouble' '(' EXPRESION ')' {$$ = new Nativas(new Tipo(Tipos.DOUBLE), $3, false, this._$.first_line,this._$.first_column);}
+                |'string' '(' EXPRESION ')' {$$ = new Nativas(new Tipo(Tipos.STRING), $3, false, this._$.first_line,this._$.first_column);}
+                |'typeof' '(' EXPRESION ')' {$$ = new Nativas(new Tipo(Tipos.TYPEOF), $3, false, this._$.first_line,this._$.first_column);}                
+                ;
