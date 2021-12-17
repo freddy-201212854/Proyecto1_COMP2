@@ -45,6 +45,8 @@ identifier ([a-zA-Z_])[a-zA-Z0-9_]*
 {decimal}             return 'decimal' 
 {entero}              return 'entero' 
 {stringliteral}       return 'STRING_LITERAL'
+"++"                   return '++'
+"--"                   return '--'
 "*"                   return '*'
 "/"                   return '/'
 "%"                   return '%'
@@ -176,6 +178,8 @@ LISTA_VAR : LISTA_VAR ',' identifier      {$$.push($3);}
             ;
 
 ASIGNACION : identifier '=' EXPRESION ';' {$$ = new Asignacion($1, $3, this._$.first_line,this._$.first_column);}
+           | identifier '++' ';' {$$ = new Asignacion($1, null, this._$.first_line,this._$.first_column, $2);}
+           | identifier '--' ';' {$$ = new Asignacion($1, null, this._$.first_line,this._$.first_column, $2);}
            ;
 
 PRINT : 'print' '(' LISTA_EXPRESIONES ')' ';' {$$ = new Print($3, this._$.first_line,this._$.first_column);}
